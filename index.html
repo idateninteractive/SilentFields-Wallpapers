@@ -1,0 +1,2087 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Silent Fields - Premium 4K Wallpaper Store</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800;900&display=swap');
+      @import "tailwindcss";
+
+      @theme {
+        --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+        --font-display: "Space Grotesk", sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+        
+        --color-brand-red: #ff3333;
+        --color-brand-red-dark: #cc0000;
+        --color-gog-dark: #0a0a0a;
+        --color-gog-surface: #121212;
+        --color-gog-card: #1e1e1e;
+      }
+
+      /* Custom scrollbars for a premium, clean dark-mode experience */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #dc2626;
+      }
+
+      body {
+        background-color: #0a0a0a;
+        color: #f4f4f5;
+        font-family: var(--font-sans);
+        overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Light Theme Variables & Classes when active */
+      body.light-theme {
+        background-color: #f4f4f5;
+        color: #18181b;
+      }
+
+      body.light-theme ::-webkit-scrollbar-track {
+        background: #f4f4f5;
+      }
+
+      body.light-theme ::-webkit-scrollbar-thumb {
+        background: #e4e4e7;
+      }
+
+      body.light-theme ::-webkit-scrollbar-thumb:hover {
+        background: #ff3333;
+      }
+
+      /* Custom utility styles */
+      .gradient-overlay {
+        background: linear-gradient(to top, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.4) 50%, rgba(10, 10, 10, 0.1) 100%);
+      }
+
+      body.light-theme .gradient-overlay {
+        background: linear-gradient(to top, rgba(244, 244, 245, 1) 0%, rgba(244, 244, 245, 0.4) 50%, rgba(244, 244, 245, 0.1) 100%);
+      }
+
+      .glow-red {
+        box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+      }
+
+      .glow-red-heavy {
+        box-shadow: 0 0 25px rgba(220, 38, 38, 0.6);
+      }
+
+      .text-glow-red {
+        text-shadow: 0 0 30px rgba(220, 38, 38, 0.8);
+      }
+
+      .text-stroke-red {
+        -webkit-text-stroke: 1px #dc2626;
+      }
+
+      /* Custom utility transitions */
+      .transition-drawer {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      }
+
+      .transition-modal {
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+      }
+    </style>
+  </head>
+  <body class="transition-colors duration-300 antialiased selection:bg-brand-red selection:text-white">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm pointer-events-none"></div>
+
+    <!-- MAIN APP STRUCTURE -->
+    <div class="min-h-screen flex flex-col">
+      
+      <!-- HEADER -->
+      <header id="app-header" class="sticky top-0 z-40 transition-all duration-300 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-between h-20">
+            
+            <!-- Logo Brand -->
+            <div onclick="switchTab('home')" class="flex items-center cursor-pointer group select-none">
+              <span class="text-xl sm:text-2xl font-display font-black tracking-widest text-white uppercase text-glow-red hover:text-brand-red transition-colors">Silent Fields</span>
+            </div>
+
+            <!-- Navigation Tab Links -->
+            <nav class="hidden md:flex items-center space-x-1">
+              <button onclick="switchTab('home')" id="tab-btn-home" class="px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:text-white text-zinc-400">
+                Home
+              </button>
+              <button onclick="switchTab('explore')" id="tab-btn-explore" class="px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:text-white text-zinc-400">
+                Explore Wallpapers
+              </button>
+              <button onclick="switchTab('library')" id="tab-btn-library" class="px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:text-white text-zinc-400">
+                My Library
+              </button>
+              <button onclick="switchTab('admin')" id="tab-btn-admin" class="px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:text-white text-zinc-400 flex items-center gap-1.5">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i> Admin
+              </button>
+            </nav>
+
+            <!-- Right-side header controls -->
+            <div class="flex items-center space-x-3">
+              <!-- Dark Mode Toggle -->
+              <button onclick="toggleTheme()" class="p-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 transition-colors duration-300 text-zinc-400 hover:text-white" title="Toggle theme">
+                <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+              </button>
+
+              <!-- Cart Trigger Button -->
+              <button onclick="toggleCartDrawer(true)" class="relative p-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 transition-colors duration-300 text-zinc-400 hover:text-white" title="Shopping Cart">
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-brand-red text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-zinc-950 scale-0 transition-transform duration-300">0</span>
+              </button>
+
+              <!-- Mobile Menu Trigger -->
+              <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 transition-colors duration-300 text-zinc-400 hover:text-white">
+                <i data-lucide="menu" id="mobile-menu-icon" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-zinc-900 bg-zinc-950 px-4 py-4 space-y-2">
+          <button onclick="switchTab('home'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">Home</button>
+          <button onclick="switchTab('explore'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">Explore Wallpapers</button>
+          <button onclick="switchTab('library'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors">My Library</button>
+          <button onclick="switchTab('admin'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Admin</button>
+        </div>
+      </header>
+
+      <!-- MAIN MAIN -->
+      <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- HOME TAB SECTION -->
+        <section id="section-home" class="animate-fade-in">
+          <!-- Epic Hero Showcase -->
+          <div class="relative py-20 px-6 sm:px-12 md:px-16 rounded-3xl overflow-hidden mb-12 border border-zinc-900 shadow-2xl bg-zinc-950">
+            <!-- Background Image overlay -->
+            <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity md:opacity-50" style="background-image: url('src/assets/images/alien_shooter_bg_1782984825916.jpg')"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/75 to-transparent"></div>
+            
+            <div class="relative z-10 max-w-3xl">
+              <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-brand-red/10 border border-brand-red/30 text-brand-red mb-6">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Live Companion Collection
+              </span>
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-black uppercase tracking-tight text-white mb-6 leading-[1.1]">
+                ALIEN LAST HOPE<br/>
+                <span class="text-glow-red text-brand-red italic">SHOOTER</span>
+              </h1>
+              <p class="text-zinc-400 text-base sm:text-lg mb-8 leading-relaxed max-w-2xl">
+                Immerse your desktop, mobile, and workspace screens in the atmospheric dark alien universe. Unlock premium artist high-definition 4K & 5K wallpapers, featuring intense cyber battles, glowing neon spaceships, and majestic cosmos landscapes.
+              </p>
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <button onclick="switchTab('explore')" class="px-8 py-4 rounded-xl font-bold bg-brand-red hover:bg-brand-red-dark transition-all duration-300 text-white shadow-lg shadow-brand-red/20 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                  Browse Collection <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+                <button onclick="switchTab('library')" class="px-8 py-4 rounded-xl font-bold border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-800 hover:text-white transition-all duration-300 text-zinc-400 flex items-center justify-center gap-2">
+                  My Library
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Featured/Trending Section -->
+          <div class="mb-12">
+            <div class="flex items-end justify-between mb-8">
+              <div>
+                <span class="text-xs font-mono uppercase tracking-widest text-brand-red font-bold">Recommended</span>
+                <h2 class="text-2xl sm:text-3xl font-display font-black uppercase tracking-wide text-white mt-1">Trending Wallpapers</h2>
+              </div>
+              <button onclick="switchTab('explore')" class="text-xs font-semibold tracking-wider uppercase text-brand-red hover:text-brand-red-dark flex items-center gap-1 transition-colors">
+                View All <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
+            <!-- Featured Wallpapers Grid -->
+            <div id="featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- High-Tech Simulator Info Banner -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10 border-t border-zinc-900">
+            <div class="flex items-start space-x-4">
+              <div class="p-3 bg-brand-red/10 border border-brand-red/20 rounded-xl text-brand-red">
+                <i data-lucide="image" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-1">Ultra HD 4K & 5K</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Perfect pixel density formats designed specifically for multi-monitor displays, high-end panels, and portable phones.</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-4">
+              <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400">
+                <i data-lucide="monitor" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-1">Interactive Simulators</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Preview any wallpaper in real-time within realistic desktop, mobile, and tablet viewport frames prior to buying.</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-4">
+              <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-1">Durable Preservation</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Your collection purchases are saved inside secure sandbox-resilient memory stacks, keeping ownership safe across visits.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- EXPLORE TAB SECTION -->
+        <section id="section-explore" class="hidden animate-fade-in">
+          <!-- Showcase Header -->
+          <div class="mb-10 text-center md:text-left">
+            <span class="text-xs font-mono uppercase tracking-widest text-brand-red font-bold">Catalog Portal</span>
+            <h1 class="text-3xl sm:text-4xl font-display font-black uppercase tracking-tight text-white mt-1">Explore Wallpaper Database</h1>
+            <p class="text-zinc-400 text-sm mt-2 max-w-xl">Use the advanced search parameters and filter categories to discover your ultimate sci-fi desktop theme.</p>
+          </div>
+
+          <!-- Filter & Search Controls panel -->
+          <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between p-4 rounded-2xl border border-zinc-900 bg-zinc-950/60 mb-8">
+            <!-- Search bar -->
+            <div class="relative flex-grow max-w-lg">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                <i data-lucide="search" class="w-4 h-4"></i>
+              </span>
+              <input 
+                type="text" 
+                id="search-input" 
+                oninput="handleFilter()" 
+                placeholder="Search wallpaper titles or tags..." 
+                class="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium outline-none text-white focus:border-brand-red/60 focus:bg-zinc-900/80 transition-all placeholder:text-zinc-500"
+              />
+            </div>
+
+            <!-- Category Tag List Filter -->
+            <div id="category-filter-list" class="flex items-center gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- Wallpapers Catalog Grid -->
+          <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+          <!-- Empty Catalog Fallback State -->
+          <div id="catalog-empty-state" class="hidden text-center py-20 rounded-3xl border border-dashed border-zinc-800 bg-zinc-950/40">
+            <div class="p-4 bg-zinc-900/50 rounded-2xl w-fit mx-auto text-zinc-500 mb-4">
+              <i data-lucide="image" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-base font-bold text-white uppercase tracking-wider">No Wallpapers Match Search</h3>
+            <p class="text-xs text-zinc-500 max-w-md mx-auto mt-2">We couldn't find any items matching your active search filters. Try typing a different keyword or resetting filters.</p>
+            <button onclick="resetFilters()" class="mt-6 px-5 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-bold text-white hover:bg-zinc-800 transition-colors">Reset Filter Parameters</button>
+          </div>
+        </section>
+
+
+        <!-- MY LIBRARY TAB SECTION -->
+        <section id="section-library" class="hidden animate-fade-in">
+          <div class="mb-10 text-center md:text-left">
+            <span class="text-xs font-mono uppercase tracking-widest text-brand-red font-bold">User Collection</span>
+            <h1 class="text-3xl sm:text-4xl font-display font-black uppercase tracking-tight text-white mt-1">My Digital Vault</h1>
+            <p class="text-zinc-400 text-sm mt-2 max-w-xl">View all purchased and free downloaded digital assets. Instantly download high-resolution master assets.</p>
+          </div>
+
+          <!-- Library Grid -->
+          <div id="library-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+          <!-- Empty Library state -->
+          <div id="library-empty-state" class="hidden text-center py-24 rounded-3xl border border-dashed border-zinc-800 bg-zinc-950/40">
+            <div class="p-4 bg-zinc-900/50 rounded-2xl w-fit mx-auto text-zinc-500 mb-4">
+              <i data-lucide="folder-heart" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-base font-bold text-white uppercase tracking-wider">Your Vault is Empty</h3>
+            <p class="text-xs text-zinc-500 max-w-sm mx-auto mt-2">You haven't purchased or added any premium wallpapers to your safe vault collection yet.</p>
+            <button onclick="switchTab('explore')" class="mt-6 px-6 py-3 rounded-xl bg-brand-red text-xs font-bold text-white hover:bg-brand-red-dark transition-colors">Browse Store Catalog</button>
+          </div>
+        </section>
+
+
+        <!-- ADMIN PANEL TAB SECTION -->
+        <section id="section-admin" class="hidden animate-fade-in">
+          
+          <!-- Auth Block -->
+          <div id="admin-login-block" class="max-w-md mx-auto py-12">
+            <div class="p-8 rounded-3xl border border-zinc-900 bg-zinc-950/60 shadow-xl">
+              <div class="flex flex-col items-center mb-6 text-center">
+                <span class="text-2xl sm:text-3xl font-display font-black tracking-widest text-white uppercase text-glow-red mb-4">Silent Fields</span>
+                <h2 class="text-xl font-display font-black uppercase tracking-wider text-white">Administrator Terminal</h2>
+                <p class="text-xs text-zinc-500 mt-2">Authorize credentials to access analytics, add wallpapers, and modify database items.</p>
+              </div>
+
+              <!-- Auth error -->
+              <div id="login-error-box" class="hidden flex items-center space-x-2 p-3 bg-red-950/30 border border-red-900/50 rounded-xl text-red-400 text-xs font-medium mb-6">
+                <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+                <span id="login-error-text">Invalid username or password.</span>
+              </div>
+
+              <!-- Login Form -->
+              <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                  <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Username</label>
+                  <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500"><i data-lucide="user" class="w-4 h-4"></i></span>
+                    <input type="text" id="admin-username" required placeholder="Enter username" class="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Password</label>
+                  <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500"><i data-lucide="key-round" class="w-4 h-4"></i></span>
+                    <input type="password" id="admin-password" required placeholder="••••••••" class="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                  </div>
+                </div>
+                <button type="submit" class="w-full py-3.5 rounded-xl font-bold bg-brand-red hover:bg-brand-red-dark text-white text-sm transition-colors mt-6">Authenticate Terminal</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Dashboard Panel (Authenticated) -->
+          <div id="admin-dashboard-block" class="hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-6 border-b border-zinc-900 gap-4">
+              <div>
+                <span class="text-xs font-mono uppercase tracking-widest text-brand-red font-bold">Admin Console</span>
+                <h1 class="text-3xl sm:text-4xl font-display font-black uppercase tracking-tight text-white mt-1">Management Terminal</h1>
+              </div>
+              <button onclick="handleAdminLogout()" class="px-5 py-2.5 rounded-xl border border-zinc-800 hover:border-brand-red/50 bg-zinc-900/40 text-xs font-bold text-zinc-400 hover:text-brand-red transition-all flex items-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Terminate Authorization
+              </button>
+            </div>
+
+            <!-- Stats Analytics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              <div class="p-6 rounded-2xl border border-zinc-900 bg-zinc-950/60 flex items-center justify-between">
+                <div>
+                  <span class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold">Total Assets</span>
+                  <p id="stat-total-count" class="text-2xl font-bold text-white mt-1">0</p>
+                </div>
+                <div class="p-3.5 bg-brand-red/10 border border-brand-red/20 rounded-xl text-brand-red">
+                  <i data-lucide="image" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="p-6 rounded-2xl border border-zinc-900 bg-zinc-950/60 flex items-center justify-between">
+                <div>
+                  <span class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold">Free Assets</span>
+                  <p id="stat-free-count" class="text-2xl font-bold text-emerald-400 mt-1">0</p>
+                </div>
+                <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+                  <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="p-6 rounded-2xl border border-zinc-900 bg-zinc-950/60 flex items-center justify-between">
+                <div>
+                  <span class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold">Average Price</span>
+                  <p id="stat-avg-price" class="text-2xl font-bold text-white mt-1">$0.00</p>
+                </div>
+                <div class="p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400">
+                  <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="p-6 rounded-2xl border border-zinc-900 bg-zinc-950/60 flex items-center justify-between">
+                <div>
+                  <span class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold">System Status</span>
+                  <p class="text-base font-bold text-brand-red flex items-center gap-1.5 mt-2 font-mono"><span class="w-2 h-2 rounded-full bg-brand-red animate-ping"></span> ONLINE</p>
+                </div>
+                <div class="p-3.5 bg-brand-red/10 border border-brand-red/20 rounded-xl text-brand-red">
+                  <i data-lucide="activity" class="w-5 h-5"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content Grid split -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              <!-- Left Side: Add Wallpaper Form -->
+              <div class="lg:col-span-5">
+                <div class="p-6 sm:p-8 rounded-3xl border border-zinc-900 bg-zinc-950/60 sticky top-28">
+                  <h2 class="text-lg font-display font-black uppercase tracking-wider text-white mb-6 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-brand-red"></i> Append New Asset</h2>
+                  
+                  <form onsubmit="handleCreateWallpaper(event)" class="space-y-4">
+                    <div>
+                      <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Asset Title *</label>
+                      <input type="text" id="add-title" required placeholder="e.g. Alien Commander Throne" class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Category Tag *</label>
+                        <select id="add-category" class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors">
+                          <option value="Cyberpunk">Cyberpunk</option>
+                          <option value="Space">Space</option>
+                          <option value="Anime">Anime</option>
+                          <option value="Nature">Nature</option>
+                          <option value="Minimalist">Minimalist</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Price ($) *</label>
+                        <input type="number" step="0.01" min="0" id="add-price" required placeholder="0.00 for FREE" class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Cover Image URL *</label>
+                      <input type="url" id="add-cover" required placeholder="https://images.unsplash.com/photo-..." class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Resolution</label>
+                        <input type="text" id="add-resolution" placeholder="3840x2160 (4K UHD)" class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                      </div>
+                      <div>
+                        <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Aspect Ratio</label>
+                        <input type="text" id="add-aspect" placeholder="16:9 Landscape" class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-xxs font-mono uppercase tracking-wider text-zinc-400 font-bold mb-1.5">Detailed Description</label>
+                      <textarea id="add-description" rows="3" placeholder="Describe the atmosphere, glowing particles, lasers..." class="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-900/40 text-sm font-medium text-white outline-none focus:border-brand-red/60 transition-colors resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 rounded-xl font-bold bg-brand-red hover:bg-brand-red-dark text-white text-sm transition-colors mt-4">Append Wallpaper Asset</button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Right Side: Catalog Manager List -->
+              <div class="lg:col-span-7">
+                <div class="p-6 rounded-3xl border border-zinc-900 bg-zinc-950/60">
+                  <h2 class="text-lg font-display font-black uppercase tracking-wider text-white mb-6 flex items-center gap-2"><i data-lucide="sliders" class="w-5 h-5 text-zinc-400"></i> Active Database Catalog</h2>
+                  
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm font-medium text-zinc-400">
+                      <thead class="text-xxs font-mono uppercase tracking-wider text-zinc-500 border-b border-zinc-900">
+                        <tr>
+                          <th class="pb-3 pr-4">Asset</th>
+                          <th class="pb-3 px-4">Category</th>
+                          <th class="pb-3 px-4">Price</th>
+                          <th class="pb-3 pl-4 text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-catalog-table" class="divide-y divide-zinc-900">
+                        <!-- Dynamically populated via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- FOOTER -->
+      <footer class="border-t border-zinc-900 bg-zinc-950/50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3 select-none">
+              <span class="text-lg font-display font-black tracking-widest text-white uppercase text-glow-red">Silent Fields</span>
+              <span class="text-zinc-600 font-mono text-xxs tracking-wider uppercase">© 2026 SigmaTeam Systems.</span>
+            </div>
+            <div class="flex items-center space-x-6 text-zinc-500 text-xs font-semibold uppercase tracking-wider">
+              <button onclick="switchTab('explore')" class="hover:text-white transition-colors">Catalog</button>
+              <button onclick="switchTab('library')" class="hover:text-white transition-colors">Vault</button>
+              <button onclick="switchTab('admin')" class="hover:text-white transition-colors">Admin Terminal</button>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+
+    <!-- DYNAMIC OVERLAY DRAWERS & DIALOGS -->
+
+    <!-- BACKGROUND SHADE OVERLAY (Common for dialogs) -->
+    <div id="backdrop-overlay" onclick="closeAllOverlays()" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden transition-opacity duration-300 opacity-0 pointer-events-none"></div>
+
+    <!-- CART SLIDE-OUT DRAWER -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md bg-zinc-950 border-l border-zinc-900 shadow-2xl p-6 transition-drawer transform translate-x-full flex flex-col">
+      <div class="flex items-center justify-between pb-5 border-b border-zinc-900">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-red"></i>
+          <h2 class="text-lg font-display font-black uppercase tracking-wider text-white">Your Shopping Cart</h2>
+        </div>
+        <button onclick="toggleCartDrawer(false)" class="p-2 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-850 text-zinc-400 hover:text-white transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable Cart Item list -->
+      <div id="cart-item-list" class="flex-grow overflow-y-auto py-6 space-y-4">
+        <!-- Dynamically populated via JS -->
+      </div>
+
+      <!-- Empty Cart Screen state -->
+      <div id="cart-empty-state" class="hidden flex-col items-center justify-center text-center py-20 flex-grow">
+        <div class="p-4 bg-zinc-900/50 rounded-2xl text-zinc-500 mb-4"><i data-lucide="shopping-bag" class="w-8 h-8"></i></div>
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Your Cart is Empty</h3>
+        <p class="text-xs text-zinc-500 max-w-xs mt-2">Browse the gallery list and add some premium sci-fi assets to unlock digital items.</p>
+        <button onclick="toggleCartDrawer(false); switchTab('explore')" class="mt-6 px-5 py-2.5 rounded-xl bg-brand-red text-xs font-bold text-white hover:bg-brand-red-dark transition-colors">Browse Store Catalog</button>
+      </div>
+
+      <!-- Cart totals checkout container (Footer of drawer) -->
+      <div id="cart-footer" class="border-t border-zinc-900 pt-6 space-y-6">
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs text-zinc-400">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">$0.00</span>
+          </div>
+          <div class="flex justify-between text-xs text-zinc-400">
+            <span>Estimated VAT / Processing</span>
+            <span id="cart-tax">$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm font-bold text-white pt-2 border-t border-zinc-900/40">
+            <span class="uppercase tracking-wider">Estimated Total</span>
+            <span id="cart-total" class="text-brand-red text-base">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Checkout Interactive block trigger -->
+        <div id="checkout-interactive-block">
+          <button onclick="triggerCheckout()" class="w-full py-4 rounded-xl font-bold bg-brand-red hover:bg-brand-red-dark text-white text-sm transition-colors flex items-center justify-center gap-2">
+            Secure Checkout <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Simulated Interactive Checkout Form Panel -->
+        <div id="checkout-form-panel" class="hidden p-4 rounded-2xl border border-zinc-900 bg-zinc-900/20 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-mono uppercase tracking-wider text-white font-bold">Encrypted Credit Card</h4>
+            <span class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase bg-emerald-400/5 px-2 py-0.5 rounded border border-emerald-400/20">Secured</span>
+          </div>
+          <div class="space-y-3">
+            <div>
+              <input type="text" id="cc-number" placeholder="Card Number (e.g. 4000 1234 5678 9010)" class="w-full px-3 py-2.5 text-xs rounded-xl border border-zinc-800 bg-zinc-900 text-white outline-none focus:border-brand-red/60 placeholder:text-zinc-500 font-mono" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <input type="text" id="cc-expiry" placeholder="MM / YY" class="w-full px-3 py-2.5 text-xs rounded-xl border border-zinc-800 bg-zinc-900 text-white outline-none focus:border-brand-red/60 placeholder:text-zinc-500 font-mono" />
+              <input type="text" id="cc-cvc" placeholder="CVC" class="w-full px-3 py-2.5 text-xs rounded-xl border border-zinc-800 bg-zinc-900 text-white outline-none focus:border-brand-red/60 placeholder:text-zinc-500 font-mono" />
+            </div>
+            <div>
+              <input type="email" id="cc-email" placeholder="Receipt Email Address" class="w-full px-3 py-2.5 text-xs rounded-xl border border-zinc-800 bg-zinc-900 text-white outline-none focus:border-brand-red/60 placeholder:text-zinc-500" />
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="cancelCheckout()" class="flex-1 py-2.5 rounded-xl border border-zinc-800 text-xs font-bold text-zinc-400 hover:text-white transition-colors bg-transparent">Back</button>
+            <button onclick="processOrderPayment()" class="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-colors">Confirm Payment</button>
+          </div>
+        </div>
+
+        <!-- Simulated Checkout Processing State -->
+        <div id="checkout-processing-panel" class="hidden text-center py-6">
+          <div class="inline-block relative w-12 h-12 mb-3">
+            <div class="absolute inset-0 rounded-full border-4 border-brand-red/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-t-brand-red animate-spin"></div>
+          </div>
+          <h4 class="text-xs font-mono uppercase tracking-wider text-white font-bold">Authorizing Transaction...</h4>
+          <p class="text-[10px] text-zinc-500 mt-1">Please do not refresh or navigate away from the page.</p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- WALLPAPER PREVIEW DETAILS DIALOG MODAL -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 hidden pointer-events-none">
+      <div class="relative w-full max-w-6xl max-h-[90vh] bg-zinc-950 border border-zinc-900 rounded-3xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto transition-modal transform scale-95 opacity-0">
+        
+        <!-- Header Controls -->
+        <div class="absolute top-4 right-4 z-10 flex space-x-2">
+          <button onclick="closeDetailModal()" class="p-2.5 rounded-xl bg-zinc-950/60 backdrop-blur-md border border-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Modal content split view container -->
+        <div class="flex-grow overflow-y-auto grid grid-cols-1 lg:grid-cols-12">
+          
+          <!-- LEFT SIDE: Wallpaper Interactive Device Simulator Panel -->
+          <div class="lg:col-span-7 p-6 sm:p-8 bg-zinc-950 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-zinc-900">
+            
+            <!-- Selector Tabs for device framing -->
+            <div class="flex items-center justify-center space-x-2 mb-8 bg-zinc-900/30 border border-zinc-900 p-1.5 rounded-2xl w-fit mx-auto select-none">
+              <button onclick="setSimulationFrame('desktop')" id="sim-btn-desktop" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 bg-brand-red text-white">
+                <i data-lucide="monitor" class="w-4 h-4"></i> Desktop Preview
+              </button>
+              <button onclick="setSimulationFrame('mobile')" id="sim-btn-mobile" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 text-zinc-400 hover:text-white">
+                <i data-lucide="smartphone" class="w-4 h-4"></i> Mobile Preview
+              </button>
+              <button onclick="setSimulationFrame('tablet')" id="sim-btn-tablet" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 text-zinc-400 hover:text-white">
+                <i data-lucide="tablet" class="w-4 h-4"></i> Tablet Preview
+              </button>
+            </div>
+
+            <!-- SIMULATOR DISPLAY viewport frame dynamic area -->
+            <div class="flex-grow flex items-center justify-center py-6">
+              
+              <!-- DESKTOP CONTAINER FRAME -->
+              <div id="sim-frame-desktop" class="w-full max-w-lg transition-all duration-300">
+                <div class="relative aspect-[16/10] bg-zinc-900 rounded-t-xl border border-zinc-800 p-2 shadow-2xl flex flex-col overflow-hidden">
+                  <!-- The wallpaper image inside simulator -->
+                  <div id="sim-bg-desktop" class="flex-grow rounded-md bg-cover bg-center relative group" style="background-image: url('')">
+                    <!-- Screen Overlay details -->
+                    <div class="absolute bottom-2 left-2 flex space-x-1.5 select-none scale-90 origin-bottom-left">
+                      <div class="w-3.5 h-3.5 rounded bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center"><i data-lucide="grid" class="w-2 h-2 text-white"></i></div>
+                      <div class="w-3.5 h-3.5 rounded bg-white/10 backdrop-blur border border-white/20"></div>
+                      <div class="w-3.5 h-3.5 rounded bg-white/10 backdrop-blur border border-white/20"></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 flex items-center space-x-1.5 scale-75 origin-bottom-right text-white/90">
+                      <i data-lucide="wifi" class="w-2.5 h-2.5"></i>
+                      <i data-lucide="battery" class="w-2.5 h-2.5"></i>
+                      <span class="text-[8px] font-mono font-bold leading-none">12:00 PM</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Sleek Desktop Chin / stand mockup -->
+                <div class="bg-zinc-850 h-5 border-x border-b border-zinc-700/60 rounded-b-xl flex items-center justify-center shadow-lg">
+                  <div class="w-2 h-2 rounded-full bg-zinc-600"></div>
+                </div>
+                <div class="w-20 h-4 bg-zinc-800 mx-auto rounded-b-md border-x border-b border-zinc-700/40"></div>
+              </div>
+
+              <!-- MOBILE CONTAINER FRAME -->
+              <div id="sim-frame-mobile" class="hidden w-44 transition-all duration-300 shadow-2xl">
+                <div class="relative aspect-[9/19.5] bg-zinc-900 rounded-[30px] border-[5px] border-zinc-850 p-2 shadow-2xl flex flex-col overflow-hidden">
+                  <!-- Notch element -->
+                  <div class="absolute top-2.5 inset-x-0 mx-auto w-16 h-3.5 bg-zinc-850 rounded-full z-20 flex items-center justify-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-900 mr-2"></span>
+                    <span class="w-2.5 h-0.5 rounded-full bg-zinc-800"></span>
+                  </div>
+                  <!-- Mobile wallpaper preview -->
+                  <div id="sim-bg-mobile" class="flex-grow rounded-[22px] bg-cover bg-center relative" style="background-image: url('')">
+                    <!-- Mobile screen info -->
+                    <div class="absolute top-2.5 left-4 scale-75 text-white/90 font-bold text-[8px] font-mono">08:45</div>
+                    <div class="absolute top-2.5 right-4 flex items-center space-x-1 scale-75 text-white/90 font-bold text-[8px]">
+                      <i data-lucide="wifi" class="w-2 h-2"></i>
+                      <i data-lucide="battery" class="w-2 h-2"></i>
+                    </div>
+                    <!-- Mock lockscreen widget -->
+                    <div class="absolute top-10 inset-x-0 text-center text-white/90 select-none">
+                      <div class="text-[20px] font-display font-light leading-none">08:45</div>
+                      <div class="text-[6px] uppercase tracking-widest mt-1 font-semibold">Friday, July 3</div>
+                    </div>
+                    <!-- Home indicators bar -->
+                    <div class="absolute bottom-2 inset-x-0 mx-auto w-12 h-1 bg-white/50 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TABLET CONTAINER FRAME -->
+              <div id="sim-frame-tablet" class="hidden w-80 transition-all duration-300">
+                <div class="relative aspect-[4/3] bg-zinc-900 rounded-2xl border-[6px] border-zinc-850 p-2.5 shadow-2xl flex flex-col overflow-hidden">
+                  <!-- Tablet wallpaper image preview -->
+                  <div id="sim-bg-tablet" class="flex-grow rounded-lg bg-cover bg-center relative" style="background-image: url('')">
+                    <div class="absolute bottom-2.5 right-3 text-white/95 scale-75 origin-bottom-right flex items-center space-x-1.5">
+                      <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+                      <i data-lucide="battery" class="w-3.5 h-3.5"></i>
+                      <span class="text-[10px] font-bold font-mono">10:15 AM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Author signature overlay -->
+            <div class="text-center">
+              <span id="detail-creator-line" class="text-xs text-zinc-500 font-medium">Digital Art masterpiece created by <strong>Elena S.</strong></span>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE: Info panel & specs details -->
+          <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between">
+            <div class="space-y-6">
+              
+              <!-- Wallpaper details header -->
+              <div>
+                <span id="detail-category-badge" class="inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-brand-red/10 border border-brand-red/20 text-brand-red">CYBERPUNK</span>
+                <h2 id="detail-title" class="text-2xl sm:text-3xl font-display font-black uppercase tracking-wide text-white mt-3">LAST HOPE NIGHT</h2>
+                <p id="detail-short-desc" class="text-zinc-400 text-xs sm:text-sm leading-relaxed mt-2">A spectacular cinematic view of the ultimate neon sanctuary glowing in a dark cyberpunk megacity.</p>
+              </div>
+
+              <!-- Price, discount rate & status -->
+              <div class="flex items-center space-x-4 py-4 px-5 rounded-2xl border border-zinc-900 bg-zinc-900/20">
+                <div>
+                  <span class="text-xxs font-mono uppercase tracking-wider text-zinc-500 block">Digital License Price</span>
+                  <div class="flex items-baseline space-x-2 mt-1">
+                    <span id="detail-price-main" class="text-2xl font-bold text-white">$4.99</span>
+                    <span id="detail-price-original" class="text-xs font-mono line-through text-zinc-500 hidden">$0.00</span>
+                  </div>
+                </div>
+                <div id="detail-badge-sale" class="hidden bg-brand-red text-white text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded border border-brand-red/30">SALE -25%</div>
+              </div>
+
+              <!-- Complete details checklist grid -->
+              <div class="space-y-3">
+                <h4 class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold border-b border-zinc-900 pb-2">Technical Specifications</h4>
+                <div class="grid grid-cols-2 gap-y-3 gap-x-4 text-xs font-semibold">
+                  <div class="flex justify-between border-b border-zinc-900/40 pb-1.5">
+                    <span class="text-zinc-500">Master Resolution</span>
+                    <span id="detail-resolution" class="text-zinc-300">3840x2160 (4K)</span>
+                  </div>
+                  <div class="flex justify-between border-b border-zinc-900/40 pb-1.5">
+                    <span class="text-zinc-500">Format Ratio</span>
+                    <span id="detail-aspect" class="text-zinc-300">16:9 Landscape</span>
+                  </div>
+                  <div class="flex justify-between border-b border-zinc-900/40 pb-1.5">
+                    <span class="text-zinc-500">File Payload</span>
+                    <span id="detail-filesize" class="text-zinc-300">7.1 MB</span>
+                  </div>
+                  <div class="flex justify-between border-b border-zinc-900/40 pb-1.5">
+                    <span class="text-zinc-500">Downloads count</span>
+                    <span id="detail-downloads" class="text-emerald-400">4,820</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tags cluster -->
+              <div class="space-y-2">
+                <h4 class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold">Search Keywords</h4>
+                <div id="detail-tags" class="flex flex-wrap gap-1.5">
+                  <!-- tags populated here -->
+                </div>
+              </div>
+
+              <!-- Detailed description scroll -->
+              <div class="space-y-1.5">
+                <h4 class="text-xxs font-mono uppercase tracking-wider text-zinc-500 font-bold">Atmosphere Narrative</h4>
+                <p id="detail-description" class="text-zinc-500 text-xxs sm:text-xs leading-relaxed">
+                  The definitive cyberpunk masterpiece capturing the last glowing beacon of hope in a rain-slicked dark megacity. Vibrant crimson lasers slice through heavy atmospheric haze, creating a cinematic sanctuary of pure light and sound.
+                </p>
+              </div>
+
+            </div>
+
+            <!-- Dynamic footer trigger action -->
+            <div id="detail-modal-footer" class="mt-8 pt-6 border-t border-zinc-900 flex flex-col sm:flex-row gap-3">
+              <!-- Action button dynamically swapped -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- DOWNLOAD SIMULATED PROGRESS POPUP MODAL -->
+    <div id="download-progress-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden pointer-events-none">
+      <div class="p-6 sm:p-8 rounded-3xl border border-zinc-900 bg-zinc-950/95 shadow-2xl max-w-sm w-full text-center pointer-events-auto">
+        <div class="inline-block relative w-16 h-16 mb-4">
+          <svg class="w-full h-full -rotate-90">
+            <circle cx="32" cy="32" r="28" fill="transparent" class="stroke-zinc-800" stroke-width="4" />
+            <circle id="download-svg-ring" cx="32" cy="32" r="28" fill="transparent" class="stroke-brand-red transition-all duration-300" stroke-width="4" stroke-dasharray="175.9" stroke-dashoffset="175.9" />
+          </svg>
+          <div id="download-text-percent" class="absolute inset-0 flex items-center justify-center text-xs font-mono font-black text-white">0%</div>
+        </div>
+        <h3 class="text-sm font-display font-black uppercase tracking-wider text-white">Extracting UHD File Assets</h3>
+        <p class="text-xxs text-zinc-500 leading-relaxed max-w-xs mt-1.5">Establishing handshake protocol with CDN server clusters. Packing high-resolution assets...</p>
+      </div>
+    </div>
+
+
+    <!-- CORE APPLICATION LOGIC ENGINES -->
+    <script>
+      // 1. ORIGINAL DEFAULT CATALOG ASSETS
+      const INITIAL_WALLPAPERS = [
+        {
+          id: 'last-hope-night',
+          title: 'Last Hope Night',
+          price: 4.99,
+          discount: 25,
+          coverImage: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=2400',
+          category: 'Cyberpunk',
+          tags: ['cyberpunk', 'hope', 'neon', 'city', 'night', 'futuristic'],
+          creator: 'Elena S.',
+          downloadsCount: 4820,
+          rating: 4.95,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '7.1 MB',
+          description: 'The definitive cyberpunk masterpiece capturing the last glowing beacon of hope in a rain-slicked dark megacity. Vibrant crimson lasers slice through heavy atmospheric haze, creating a cinematic sanctuary of pure light and sound.',
+          shortDescription: 'A spectacular cinematic view of the ultimate neon sanctuary glowing in a dark cyberpunk megacity.',
+          isFeatured: true,
+          isBestseller: true
+        },
+        {
+          id: 'neo-tokyo-nightshift',
+          title: 'Neo-Tokyo Nightshift',
+          price: 2.99,
+          discount: 30,
+          coverImage: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=2400',
+          category: 'Cyberpunk',
+          tags: ['city', 'neon', 'futuristic', 'night', 'cyberpunk', 'tokyo'],
+          creator: 'Ryunosuke K.',
+          downloadsCount: 1420,
+          rating: 4.9,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '6.4 MB',
+          description: 'Immerse your desktop in the neon-drenched streets of a futuristic Tokyo. Featuring towering holographic billboards, glistening rainy alleyways, and the electric hum of cybernetic culture, this wallpaper brings cyberpunk atmosphere to life with rich pink and cyan tones.',
+          shortDescription: 'Rain-soaked futuristic Tokyo streets glowing with vibrant cyberpunk neon lights.',
+          isFeatured: true,
+          isBestseller: true
+        },
+        {
+          id: 'ethereal-cosmic-nebula',
+          title: 'Ethereal Cosmic Nebula',
+          price: 0.00,
+          coverImage: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=2400',
+          category: 'Space',
+          tags: ['space', 'nebula', 'stars', 'galaxy', 'universe', 'cosmic', 'purple'],
+          creator: 'NASA Hub',
+          downloadsCount: 5210,
+          rating: 4.8,
+          resolution: '5120x2880 (5K Retina)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '9.2 MB',
+          description: 'A spectacular deep space photography featuring ionized stellar gases forming an incredibly vivid violet and magenta nebula. Countless distant star systems and cosmic dust clouds paint an inspiring picture of interstellar exploration.',
+          shortDescription: 'A jaw-dropping high-resolution celestial capture of distant star-forming nebulas.',
+          isFeatured: true,
+          isSpecialOffer: true
+        },
+        {
+          id: 'serene-anime-skyline',
+          title: 'Serene Anime Skyline',
+          price: 1.99,
+          discount: 15,
+          coverImage: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=2400',
+          category: 'Anime',
+          tags: ['anime', 'sunset', 'art', 'clouds', 'dreamy', 'illustration'],
+          creator: 'Sora Studio',
+          downloadsCount: 3105,
+          rating: 4.9,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '4.8 MB',
+          description: 'An elegant hand-drawn styled digital illustration capturing a dreamy sunset skyline reminiscent of modern anime blockbusters. The warm golden rays break through massive, fluffy cumulonimbus clouds over a distant coastal city.',
+          shortDescription: 'Dreamy anime-inspired sunset with dramatic fluffy golden clouds.',
+          isBestseller: true
+        },
+        {
+          id: 'autumn-forest-reflection',
+          title: 'Autumn Forest Reflection',
+          price: 0.00,
+          coverImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=2400',
+          category: 'Nature',
+          tags: ['nature', 'forest', 'lake', 'reflection', 'mountain', 'autumn'],
+          creator: 'Alex Myers',
+          downloadsCount: 8490,
+          rating: 4.7,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '7.5 MB',
+          description: 'Calm waters of a pristine alpine lake perfectly mirror the fiery orange, amber, and red foliage of a dense pine forest during early autumn. In the background, majestic snow-dusted mountain peaks frame the horizon under a soft blue sky.',
+          shortDescription: 'A peaceful alpine lake mirroring fiery autumn colors and mountains.',
+          isSpecialOffer: true
+        },
+        {
+          id: 'retro-sunset-waves',
+          title: 'Retro Sunset Waves',
+          price: 3.49,
+          coverImage: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&q=80&w=2400',
+          category: 'Minimalist',
+          tags: ['minimalist', 'waves', 'retro', 'gradient', 'sun', 'geometric', 'clean'],
+          creator: 'Studio Aura',
+          downloadsCount: 1820,
+          rating: 4.6,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '3.1 MB',
+          description: 'A masterpiece of minimalism, combining a warm vaporwave gradient sun dipping below dark geometric ocean waves. Clean lines, generous negative space, and a smooth grain filter give it a premium, calm, retro-modern look.',
+          shortDescription: 'Minimalist vaporwave gradient sun setting behind clean geometric waves.',
+          isFeatured: true
+        },
+        {
+          id: 'cyberpunk-stealth-shrineway',
+          title: 'Stealth Cyberpunk Shrineway',
+          price: 2.49,
+          discount: 20,
+          coverImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=2400',
+          category: 'Cyberpunk',
+          tags: ['cyberpunk', 'temple', 'cyber', 'synthwave', 'red', 'portal'],
+          creator: 'Neo Shogun',
+          downloadsCount: 954,
+          rating: 4.8,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '5.2 MB',
+          description: 'A striking fusion of traditional eastern shrine architecture and high-tech glow grids. Red neon borders trace the contours of a massive gate leading into a cybernetic matrix sanctuary, enveloped in digital fog.',
+          shortDescription: 'Traditional shrine architecture merged with high-tech red laser grids.',
+          isFeatured: false
+        },
+        {
+          id: 'warm-pastel-landscape',
+          title: 'Warm Pastel Landscape',
+          price: 0.00,
+          coverImage: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&q=80&w=2400',
+          category: 'Minimalist',
+          tags: ['gradient', 'pastel', 'minimal', 'calm', 'abstract', 'purple'],
+          creator: 'Elena Rostova',
+          downloadsCount: 6510,
+          rating: 4.8,
+          resolution: '3840x2160 (4K UHD)',
+          aspectRatio: '16:9 Landscape',
+          fileSize: '2.5 MB',
+          description: 'An extremely soft, clean pastel color gradient flowing smoothly from deep magenta to lavender-blue and peach. Perfect for workspace setups that require zero visual clutter while keeping an ambient, artistic warmth.',
+          shortDescription: 'Ultra-clean premium pastel color gradient for an ambient, clutter-free desk setup.',
+          isBestseller: true
+        },
+        {
+          id: 'cyber-dream-portrait',
+          title: 'Cyber Dream Portrait',
+          price: 3.99,
+          coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600',
+          url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=2400',
+          category: 'Anime',
+          tags: ['portrait', 'anime', 'art', 'glowing', 'neon', 'purple', 'girl'],
+          creator: 'Hana Ichigo',
+          downloadsCount: 1120,
+          rating: 4.9,
+          resolution: '2160x3840 (Mobile 4K)',
+          aspectRatio: '9:16 Portrait',
+          fileSize: '5.9 MB',
+          description: 'A stunning portrait design explicitly formatted for modern smartphones. Highlights a stylized anime character under rich holographic neon rain, with details glowing with hyper-vivid luminescence.',
+          shortDescription: 'Stylized anime mobile wallpaper formatted in high-resolution portrait.',
+          isFeatured: true
+        }
+      ];
+
+      const CATEGORIES = ['All', 'Cyberpunk', 'Space', 'Anime', 'Nature', 'Minimalist', 'Free', 'Premium'];
+
+      // 2. SANDBOX COMPATIBLE SECURE STORAGE WRAPPER
+      const safeStorage = {
+        memoryDb: {},
+        getItem(key) {
+          try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+              return localStorage.getItem(key);
+            }
+          } catch (e) {
+            console.warn('localStorage getItem error (restricted sandbox iframe):', e);
+          }
+          return this.memoryDb[key] || null;
+        },
+        setItem(key, value) {
+          try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+              localStorage.setItem(key, value);
+              return;
+            }
+          } catch (e) {
+            console.warn('localStorage setItem error (restricted sandbox iframe):', e);
+          }
+          this.memoryDb[key] = value;
+        },
+        removeItem(key) {
+          try {
+            if (typeof window !== 'undefined' && window.localStorage) {
+              localStorage.removeItem(key);
+              return;
+            }
+          } catch (e) {
+            console.warn('localStorage removeItem error (restricted sandbox iframe):', e);
+          }
+          delete this.memoryDb[key];
+        }
+      };
+
+      // 3. CORE STATE
+      let wallpapers = [];
+      let cart = [];
+      let ownedWallpapers = [];
+      let isDarkMode = true;
+      let activeTab = 'home';
+      let selectedCategory = 'All';
+      let currentDetailWallpaper = null;
+      let activeSimulationFrame = 'desktop';
+
+      // Load Catalog Database
+      const savedCatalog = safeStorage.getItem('wallpaper_catalog');
+      if (savedCatalog) {
+        try { wallpapers = JSON.parse(savedCatalog); } catch(e) { console.error(e); }
+      }
+      if (!wallpapers || wallpapers.length === 0) {
+        wallpapers = [...INITIAL_WALLPAPERS];
+        safeStorage.setItem('wallpaper_catalog', JSON.stringify(wallpapers));
+      }
+
+      // Load Cart Items
+      const savedCart = safeStorage.getItem('wallpaper_cart');
+      if (savedCart) {
+        try { cart = JSON.parse(savedCart); } catch(e) { console.error(e); }
+      }
+
+      // Load Owned list
+      const savedOwned = safeStorage.getItem('wallpaper_owned');
+      if (savedOwned) {
+        try { ownedWallpapers = JSON.parse(savedOwned); } catch(e) { console.error(e); }
+      } else {
+        ownedWallpapers = ['ethereal-cosmic-nebula']; // starter gift free item
+        safeStorage.setItem('wallpaper_owned', JSON.stringify(ownedWallpapers));
+      }
+
+      // Load theme configuration
+      const savedTheme = safeStorage.getItem('wallpaper_theme');
+      isDarkMode = (savedTheme !== 'light'); // Default to dark mode
+
+
+      // 4. TOAST ALERTS MANAGER
+      function showNotification(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'flex items-center space-x-3 px-4 py-3 rounded-2xl border bg-zinc-950 shadow-2xl pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 max-w-sm';
+        
+        let iconMarkup = '';
+        if (type === 'success') {
+          toast.classList.add('border-emerald-500/30');
+          iconMarkup = '<span class="text-emerald-400"><i data-lucide="check" class="w-4 h-4"></i></span>';
+        } else if (type === 'error') {
+          toast.classList.add('border-red-500/30');
+          iconMarkup = '<span class="text-red-400"><i data-lucide="alert-circle" class="w-4 h-4"></i></span>';
+        } else {
+          toast.classList.add('border-zinc-800');
+          iconMarkup = '<span class="text-zinc-400"><i data-lucide="info" class="w-4 h-4"></i></span>';
+        }
+
+        toast.innerHTML = `
+          ${iconMarkup}
+          <p class="text-xs font-semibold text-white leading-tight flex-grow">${message}</p>
+          <button class="text-zinc-500 hover:text-white transition-colors" onclick="this.parentElement.remove()"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        `;
+
+        container.appendChild(toast);
+        lucide.createIcons();
+
+        // animate in
+        setTimeout(() => {
+          toast.classList.remove('translate-y-2', 'opacity-0');
+        }, 10);
+
+        // animate out and remove
+        setTimeout(() => {
+          toast.classList.add('translate-y-2', 'opacity-0');
+          setTimeout(() => toast.remove(), 300);
+        }, 4000);
+      }
+
+
+      // 5. THEME MANAGER
+      function updateThemeState() {
+        const themeBtnIcon = document.getElementById('theme-icon');
+        const header = document.getElementById('app-header');
+        
+        if (isDarkMode) {
+          document.body.classList.remove('light-theme');
+          document.body.style.backgroundColor = "#0a0a0a";
+          document.body.style.color = "#f4f4f5";
+          if (header) {
+            header.className = "sticky top-0 z-40 transition-all duration-300 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md";
+          }
+          if (themeBtnIcon) {
+            themeBtnIcon.setAttribute('data-lucide', 'sun');
+          }
+          safeStorage.setItem('wallpaper_theme', 'dark');
+        } else {
+          document.body.classList.add('light-theme');
+          document.body.style.backgroundColor = "#f4f4f5";
+          document.body.style.color = "#18181b";
+          if (header) {
+            header.className = "sticky top-0 z-40 transition-all duration-300 border-b border-zinc-200 bg-white/80 backdrop-blur-md";
+          }
+          if (themeBtnIcon) {
+            themeBtnIcon.setAttribute('data-lucide', 'moon');
+          }
+          safeStorage.setItem('wallpaper_theme', 'light');
+        }
+        lucide.createIcons();
+      }
+
+      function toggleTheme() {
+        isDarkMode = !isDarkMode;
+        updateThemeState();
+      }
+
+
+      // 6. VIEWPORT TAB NAVIGATOR
+      function switchTab(tabId) {
+        activeTab = tabId;
+        const sections = ['home', 'explore', 'library', 'admin'];
+        
+        sections.forEach(sec => {
+          const block = document.getElementById(`section-${sec}`);
+          const btn = document.getElementById(`tab-btn-${sec}`);
+          
+          if (sec === tabId) {
+            block.classList.remove('hidden');
+            if (btn) {
+              btn.className = "px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 bg-brand-red text-white shadow-lg shadow-brand-red/10";
+            }
+          } else {
+            block.classList.add('hidden');
+            if (btn) {
+              btn.className = "px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 hover:text-white text-zinc-400";
+            }
+          }
+        });
+
+        // Specific tab initialization hooks
+        if (tabId === 'home') {
+          renderFeaturedWallpapers();
+        } else if (tabId === 'explore') {
+          renderCategoryFilters();
+          renderExploreCatalog();
+        } else if (tabId === 'library') {
+          renderLibraryGrid();
+        } else if (tabId === 'admin') {
+          checkAdminAuthState();
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('mobile-menu-icon');
+        if (!menu) return;
+        
+        if (menu.classList.contains('hidden')) {
+          menu.classList.remove('hidden');
+          icon.setAttribute('data-lucide', 'x');
+        } else {
+          menu.classList.add('hidden');
+          icon.setAttribute('data-lucide', 'menu');
+        }
+        lucide.createIcons();
+      }
+
+
+      // 7. CARD PURCHASE STATE UTILITIES
+      function isOwned(id) {
+        return ownedWallpapers.includes(id);
+      }
+
+      function isInCart(id) {
+        return cart.some(item => item.id === id);
+      }
+
+
+      // 8. RENDER HOME SCREEN FEATURED IMAGES
+      function renderFeaturedWallpapers() {
+        const grid = document.getElementById('featured-grid');
+        if (!grid) return;
+
+        // Get featured wallpapers
+        const featured = wallpapers.filter(w => w.isFeatured).slice(0, 3);
+        if (featured.length === 0) {
+          featured.push(...wallpapers.slice(0, 3));
+        }
+
+        grid.innerHTML = featured.map(w => {
+          const discountPrice = w.discount ? (w.price * (1 - w.discount/100)).toFixed(2) : w.price.toFixed(2);
+          const hasDiscount = w.discount && w.discount > 0;
+          const userOwns = isOwned(w.id);
+          
+          let actionBtnMarkup = '';
+          if (userOwns) {
+            actionBtnMarkup = `
+              <button onclick="event.stopPropagation(); triggerDownload('${w.id}')" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-emerald-500/10">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Download
+              </button>
+            `;
+          } else if (w.price === 0) {
+            actionBtnMarkup = `
+              <button onclick="event.stopPropagation(); claimFreeWallpaper('${w.id}')" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-emerald-500/10">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Get Free
+              </button>
+            `;
+          } else {
+            const added = isInCart(w.id);
+            actionBtnMarkup = `
+              <button onclick="event.stopPropagation(); toggleCartItem('${w.id}')" class="px-3.5 py-2 rounded-xl border border-zinc-800 hover:border-brand-red bg-zinc-900/60 hover:bg-brand-red text-zinc-300 hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md">
+                <i data-lucide="${added ? 'check' : 'shopping-bag'}" class="w-3.5 h-3.5"></i> ${added ? 'Added' : 'Add $'+discountPrice}
+              </button>
+            `;
+          }
+
+          return `
+            <div onclick="openDetailModal('${w.id}')" class="group relative rounded-2xl overflow-hidden border border-zinc-900 bg-zinc-950/60 shadow-xl cursor-pointer hover:border-brand-red/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-brand-red/5 flex flex-col">
+              
+              <!-- Cover image view -->
+              <div class="relative aspect-[16/10] overflow-hidden bg-zinc-900">
+                <img src="${w.coverImage}" alt="${w.title}" class="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-500" loading="lazy" referrerPolicy="no-referrer" />
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent"></div>
+                
+                <!-- Bestseller/Special Offer badges overlay -->
+                <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+                  <span class="px-2.5 py-1 rounded bg-zinc-950/80 backdrop-blur-md text-[9px] font-mono font-bold tracking-widest text-brand-red uppercase border border-brand-red/30">${w.category}</span>
+                  ${w.isBestseller ? '<span class="px-2.5 py-1 rounded bg-[#ff3333] text-white text-[9px] font-mono font-black tracking-widest uppercase border border-brand-red/50">BEST SELLER</span>' : ''}
+                </div>
+
+                ${hasDiscount ? `<div class="absolute top-3 right-3 bg-[#ff3333] border border-brand-red/30 text-white text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded shadow-lg">-${w.discount}%</div>` : ''}
+              </div>
+
+              <!-- Content details area -->
+              <div class="p-5 flex-grow flex flex-col justify-between">
+                <div>
+                  <h3 class="font-display font-black text-sm uppercase tracking-wide text-white group-hover:text-brand-red transition-colors">${w.title}</h3>
+                  <p class="text-zinc-500 text-xxs mt-1">Creator: <strong>${w.creator}</strong> • ${w.resolution}</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed mt-2.5 line-clamp-2">${w.shortDescription || w.description}</p>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 mt-4 border-t border-zinc-900/40">
+                  <div class="flex flex-col">
+                    <span class="text-xxs font-mono text-zinc-500 uppercase">License</span>
+                    <span class="text-xs font-bold text-white">${w.price === 0 ? 'FREE' : '$' + discountPrice}</span>
+                  </div>
+                  ${actionBtnMarkup}
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+
+      // 9. RENDER EXPLORE SCREEN CONTROLS & CATALOG
+      function renderCategoryFilters() {
+        const filterList = document.getElementById('category-filter-list');
+        if (!filterList) return;
+
+        filterList.innerHTML = CATEGORIES.map(cat => {
+          const isActive = selectedCategory === cat;
+          return `
+            <button 
+              onclick="setFilterCategory('${cat}')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 shrink-0 ${
+                isActive 
+                  ? 'bg-brand-red text-white shadow-lg shadow-brand-red/10' 
+                  : 'bg-zinc-900/40 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850'
+              }"
+            >${cat}</button>
+          `;
+        }).join('');
+      }
+
+      function setFilterCategory(cat) {
+        selectedCategory = cat;
+        renderCategoryFilters();
+        renderExploreCatalog();
+      }
+
+      function resetFilters() {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) searchInput.value = '';
+        selectedCategory = 'All';
+        renderCategoryFilters();
+        renderExploreCatalog();
+      }
+
+      function handleFilter() {
+        renderExploreCatalog();
+      }
+
+      function renderExploreCatalog() {
+        const grid = document.getElementById('catalog-grid');
+        const emptyState = document.getElementById('catalog-empty-state');
+        const searchInput = document.getElementById('search-input');
+        if (!grid || !emptyState) return;
+
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
+        // Filter elements
+        const filtered = wallpapers.filter(w => {
+          // Category Filter
+          let matchesCat = true;
+          if (selectedCategory === 'Free') {
+            matchesCat = (w.price === 0);
+          } else if (selectedCategory === 'Premium') {
+            matchesCat = (w.price > 0);
+          } else if (selectedCategory !== 'All') {
+            matchesCat = (w.category === selectedCategory);
+          }
+
+          // Search query Filter
+          let matchesQuery = true;
+          if (query) {
+            matchesQuery = w.title.toLowerCase().includes(query) || 
+                           w.category.toLowerCase().includes(query) || 
+                           w.tags.some(t => t.toLowerCase().includes(query)) ||
+                           w.creator.toLowerCase().includes(query);
+          }
+
+          return matchesCat && matchesQuery;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        grid.innerHTML = filtered.map(w => {
+          const discountPrice = w.discount ? (w.price * (1 - w.discount/100)).toFixed(2) : w.price.toFixed(2);
+          const hasDiscount = w.discount && w.discount > 0;
+          const userOwns = isOwned(w.id);
+
+          let actionBtnMarkup = '';
+          if (userOwns) {
+            actionBtnMarkup = `
+              <button onclick="event.stopPropagation(); triggerDownload('${w.id}')" class="p-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition-all shadow-md shadow-emerald-500/10" title="Download">
+                <i data-lucide="download" class="w-4 h-4"></i>
+              </button>
+            `;
+          } else if (w.price === 0) {
+            actionBtnMarkup = `
+              <button onclick="event.stopPropagation(); claimFreeWallpaper('${w.id}')" class="p-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition-all shadow-md shadow-emerald-500/10" title="Add to Library">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+              </button>
+            `;
+          } else {
+            const added = isInCart(w.id);
+            actionBtnMarkup = `
+              <button onclick="event.stopPropagation(); toggleCartItem('${w.id}')" class="p-2.5 rounded-xl border border-zinc-800 hover:border-brand-red bg-zinc-900/60 hover:bg-brand-red text-zinc-400 hover:text-white transition-all" title="${added ? 'Remove from Cart' : 'Add to Cart'}">
+                <i data-lucide="${added ? 'check' : 'shopping-bag'}" class="w-4 h-4"></i>
+              </button>
+            `;
+          }
+
+          return `
+            <div onclick="openDetailModal('${w.id}')" class="group relative rounded-2xl overflow-hidden border border-zinc-900 bg-zinc-950/60 shadow-lg cursor-pointer hover:border-brand-red/40 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+              
+              <!-- Picture -->
+              <div class="relative aspect-[16/10] overflow-hidden bg-zinc-900">
+                <img src="${w.coverImage}" alt="${w.title}" class="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-500" loading="lazy" referrerPolicy="no-referrer" />
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent"></div>
+                
+                <!-- Category Badges -->
+                <div class="absolute top-3 left-3 flex flex-col gap-1">
+                  <span class="px-2 py-0.5 rounded bg-zinc-950/80 backdrop-blur-md text-[8px] font-mono font-bold tracking-widest text-brand-red uppercase border border-brand-red/20">${w.category}</span>
+                </div>
+
+                ${hasDiscount ? `<div class="absolute top-3 right-3 bg-[#ff3333] text-white text-[8px] font-mono font-black uppercase px-1.5 py-0.5 rounded">-${w.discount}%</div>` : ''}
+              </div>
+
+              <!-- Body info -->
+              <div class="p-4 flex-grow flex flex-col justify-between">
+                <div>
+                  <h3 class="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-white group-hover:text-brand-red transition-colors line-clamp-1">${w.title}</h3>
+                  <p class="text-zinc-500 text-[10px] mt-0.5">${w.creator} • ${w.aspectRatio}</p>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-zinc-900/40">
+                  <div class="flex flex-col">
+                    <span class="text-xxs font-mono text-zinc-500 uppercase">License</span>
+                    <span class="text-xs font-bold text-white">${w.price === 0 ? 'FREE' : '$' + discountPrice}</span>
+                  </div>
+                  ${actionBtnMarkup}
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+
+      // 10. MY PERSONAL LIBRARY/VAULT PAGE
+      function renderLibraryGrid() {
+        const grid = document.getElementById('library-grid');
+        const emptyState = document.getElementById('library-empty-state');
+        if (!grid || !emptyState) return;
+
+        const ownedItems = wallpapers.filter(w => isOwned(w.id));
+
+        if (ownedItems.length === 0) {
+          grid.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        grid.innerHTML = ownedItems.map(w => {
+          return `
+            <div onclick="openDetailModal('${w.id}')" class="group relative rounded-2xl overflow-hidden border border-zinc-900 bg-zinc-950/60 shadow-lg cursor-pointer hover:border-brand-red/40 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+              
+              <div class="relative aspect-[16/10] overflow-hidden bg-zinc-900">
+                <img src="${w.coverImage}" alt="${w.title}" class="w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-500" loading="lazy" referrerPolicy="no-referrer" />
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent"></div>
+                <div class="absolute top-3 left-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] font-mono font-black uppercase px-2 py-0.5 rounded shadow-lg flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span> Unlocked
+                </div>
+              </div>
+
+              <div class="p-4 flex-grow flex flex-col justify-between">
+                <div>
+                  <h3 class="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-white line-clamp-1">${w.title}</h3>
+                  <p class="text-zinc-500 text-[10px] mt-0.5">${w.resolution} • ${w.fileSize}</p>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-zinc-900/40">
+                  <span class="text-[10px] font-semibold text-zinc-500">Creator: <strong>${w.creator}</strong></span>
+                  <button onclick="event.stopPropagation(); triggerDownload('${w.id}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all flex items-center gap-1 shadow-md shadow-emerald-500/10">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i> 4K UHD
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+      function claimFreeWallpaper(id) {
+        if (isOwned(id)) return;
+        ownedWallpapers.push(id);
+        safeStorage.setItem('wallpaper_owned', JSON.stringify(ownedWallpapers));
+        
+        showNotification('Added Free Wallpaper to My Library Vault!', 'success');
+        
+        if (activeTab === 'home') renderFeaturedWallpapers();
+        if (activeTab === 'explore') renderExploreCatalog();
+        if (activeTab === 'library') renderLibraryGrid();
+      }
+
+
+      // 11. DOWNLOAD INTERACTION WORKFLOW (Simulated)
+      function triggerDownload(id) {
+        const item = wallpapers.find(w => w.id === id);
+        if (!item) return;
+
+        const progressModal = document.getElementById('download-progress-modal');
+        const overlay = document.getElementById('backdrop-overlay');
+        const ring = document.getElementById('download-svg-ring');
+        const textPercent = document.getElementById('download-text-percent');
+
+        if (!progressModal || !overlay || !ring || !textPercent) return;
+
+        // Reset progress ring
+        const maxOffset = 175.9; // Circumference (2 * pi * r) where r=28
+        ring.style.strokeDashoffset = maxOffset;
+        textPercent.textContent = '0%';
+
+        // Show Progress Modal
+        progressModal.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+        setTimeout(() => {
+          overlay.classList.remove('opacity-0');
+          progressModal.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += Math.floor(Math.random() * 15) + 5;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            
+            // Success close
+            setTimeout(() => {
+              // Hide modal
+              progressModal.classList.add('scale-95', 'opacity-0');
+              overlay.classList.add('opacity-0');
+              setTimeout(() => {
+                progressModal.classList.add('hidden');
+                overlay.classList.add('hidden');
+                
+                // Trigger real file download save dialog
+                const link = document.createElement('a');
+                link.href = item.url;
+                link.download = `${item.title.toLowerCase().replace(/\\s+/g, '_')}_4k.jpg`;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showNotification(`Successfully downloaded "${item.title}" in Ultra HD!`, 'success');
+              }, 300);
+            }, 500);
+          }
+
+          // Update Ring dash offset & text percentage
+          const offset = maxOffset - (progress / 100) * maxOffset;
+          ring.style.strokeDashoffset = offset;
+          textPercent.textContent = `${progress}%`;
+        }, 150);
+      }
+
+
+      // 12. SHOPPING CART ENGINE (Slide Drawer, Items manager)
+      function toggleCartDrawer(show) {
+        const drawer = document.getElementById('cart-drawer');
+        const overlay = document.getElementById('backdrop-overlay');
+        if (!drawer || !overlay) return;
+
+        if (show) {
+          overlay.classList.remove('hidden');
+          drawer.classList.remove('hidden');
+          setTimeout(() => {
+            overlay.classList.remove('opacity-0');
+            drawer.classList.remove('translate-x-full');
+          }, 10);
+          renderCartList();
+        } else {
+          drawer.classList.add('translate-x-full');
+          overlay.classList.add('opacity-0');
+          setTimeout(() => {
+            drawer.classList.add('hidden');
+            overlay.classList.add('hidden');
+            cancelCheckout(); // reset checkout flow state
+          }, 300);
+        }
+      }
+
+      function toggleCartItem(id) {
+        const itemIndex = cart.findIndex(item => item.id === id);
+        if (itemIndex > -1) {
+          // Remove from cart
+          cart.splice(itemIndex, 1);
+          showNotification('Item removed from cart.', 'info');
+        } else {
+          // Add to cart
+          const item = wallpapers.find(w => w.id === id);
+          if (item) {
+            cart.push({
+              id: item.id,
+              title: item.title,
+              price: item.price,
+              discount: item.discount,
+              coverImage: item.coverImage,
+              category: item.category
+            });
+            showNotification('Item appended to shopping cart!', 'success');
+          }
+        }
+
+        // Sync and refresh
+        safeStorage.setItem('wallpaper_cart', JSON.stringify(cart));
+        updateCartBadgeCount();
+        
+        if (activeTab === 'home') renderFeaturedWallpapers();
+        if (activeTab === 'explore') renderExploreCatalog();
+        
+        // Refresh details modal footer if currently open
+        if (currentDetailWallpaper && currentDetailWallpaper.id === id) {
+          renderDetailModalFooter();
+        }
+      }
+
+      function removeFromCart(id) {
+        cart = cart.filter(item => item.id !== id);
+        safeStorage.setItem('wallpaper_cart', JSON.stringify(cart));
+        updateCartBadgeCount();
+        renderCartList();
+
+        if (activeTab === 'home') renderFeaturedWallpapers();
+        if (activeTab === 'explore') renderExploreCatalog();
+        if (currentDetailWallpaper && currentDetailWallpaper.id === id) {
+          renderDetailModalFooter();
+        }
+      }
+
+      function updateCartBadgeCount() {
+        const badge = document.getElementById('cart-badge');
+        if (!badge) return;
+
+        const count = cart.length;
+        badge.textContent = count;
+        if (count > 0) {
+          badge.classList.remove('scale-0');
+          badge.classList.add('scale-100');
+        } else {
+          badge.classList.remove('scale-100');
+          badge.classList.add('scale-0');
+        }
+      }
+
+      function renderCartList() {
+        const itemList = document.getElementById('cart-item-list');
+        const emptyState = document.getElementById('cart-empty-state');
+        const footer = document.getElementById('cart-footer');
+        if (!itemList || !emptyState || !footer) return;
+
+        if (cart.length === 0) {
+          itemList.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          footer.classList.add('hidden');
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        footer.classList.remove('hidden');
+
+        itemList.innerHTML = cart.map(item => {
+          const discountPrice = item.discount ? (item.price * (1 - item.discount/100)) : item.price;
+          return `
+            <div class="flex items-center space-x-4 p-3 rounded-2xl border border-zinc-900 bg-zinc-900/10">
+              <img src="${item.coverImage}" alt="${item.title}" class="w-16 h-12 rounded-xl object-cover" referrerPolicy="no-referrer" />
+              <div class="flex-grow min-w-0">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider line-clamp-1">${item.title}</h4>
+                <p class="text-zinc-500 text-[10px] uppercase font-mono mt-0.5">${item.category} • HD License</p>
+              </div>
+              <div class="text-right flex flex-col items-end shrink-0 pl-2">
+                <span class="text-xs font-bold text-white">$${discountPrice.toFixed(2)}</span>
+                <button onclick="removeFromCart('${item.id}')" class="text-zinc-500 hover:text-brand-red mt-1 transition-colors">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Calculate Totals
+        let subtotal = 0;
+        cart.forEach(item => {
+          const discountPrice = item.discount ? (item.price * (1 - item.discount/100)) : item.price;
+          subtotal += discountPrice;
+        });
+        const tax = subtotal * 0.08; // 8% VAT
+        const total = subtotal + tax;
+
+        document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+
+        lucide.createIcons();
+      }
+
+      function triggerCheckout() {
+        document.getElementById('checkout-interactive-block').classList.add('hidden');
+        document.getElementById('checkout-form-panel').classList.remove('hidden');
+      }
+
+      function cancelCheckout() {
+        document.getElementById('checkout-form-panel').classList.add('hidden');
+        document.getElementById('checkout-interactive-block').classList.remove('hidden');
+        document.getElementById('checkout-processing-panel').classList.add('hidden');
+      }
+
+      function processOrderPayment() {
+        const ccNum = document.getElementById('cc-number').value.trim();
+        const ccExp = document.getElementById('cc-expiry').value.trim();
+        const ccCvc = document.getElementById('cc-cvc').value.trim();
+        const ccEmail = document.getElementById('cc-email').value.trim();
+
+        if (!ccNum || !ccExp || !ccCvc) {
+          showNotification('Please fill in card payment details completely.', 'error');
+          return;
+        }
+
+        // Hide form, show authorization spinner
+        document.getElementById('checkout-form-panel').classList.add('hidden');
+        document.getElementById('checkout-processing-panel').classList.remove('hidden');
+
+        // Simulate credit card clearance gateway handshake
+        setTimeout(() => {
+          // Unlock purchased items
+          cart.forEach(item => {
+            if (!isOwned(item.id)) {
+              ownedWallpapers.push(item.id);
+            }
+          });
+          
+          // Save state
+          safeStorage.setItem('wallpaper_owned', JSON.stringify(ownedWallpapers));
+          
+          // Clear cart
+          cart = [];
+          safeStorage.setItem('wallpaper_cart', JSON.stringify(cart));
+          updateCartBadgeCount();
+
+          // Hide and reset panels
+          cancelCheckout();
+          toggleCartDrawer(false);
+
+          showNotification('Payment cleared successfully! High-resolution 4K licenses unlocked inside My Vault.', 'success');
+          switchTab('library');
+        }, 2200);
+      }
+
+
+      // 13. DETAILS MODAL DIALOG (Live devices previews, specs checklist)
+      function openDetailModal(id) {
+        const w = wallpapers.find(item => item.id === id);
+        if (!w) return;
+
+        currentDetailWallpaper = w;
+        
+        // Show backdrop & modal
+        const modal = document.getElementById('detail-modal');
+        const overlay = document.getElementById('backdrop-overlay');
+        
+        if (!modal || !overlay) return;
+
+        overlay.classList.remove('hidden');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          overlay.classList.remove('opacity-0');
+          modal.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+
+        // Map Wallpaper Details
+        document.getElementById('detail-creator-line').innerHTML = `Digital Art masterpiece created by <strong class="text-white">${w.creator}</strong>`;
+        
+        const categoryBadge = document.getElementById('detail-category-badge');
+        categoryBadge.textContent = w.category.toUpperCase();
+        
+        document.getElementById('detail-title').textContent = w.title;
+        document.getElementById('detail-short-desc').textContent = w.shortDescription || w.description;
+        
+        const hasDiscount = w.discount && w.discount > 0;
+        const discountPrice = hasDiscount ? (w.price * (1 - w.discount/100)).toFixed(2) : w.price.toFixed(2);
+        
+        const priceMain = document.getElementById('detail-price-main');
+        const priceOrig = document.getElementById('detail-price-original');
+        const saleBadge = document.getElementById('detail-badge-sale');
+
+        if (w.price === 0) {
+          priceMain.textContent = 'FREE';
+          priceOrig.classList.add('hidden');
+          saleBadge.classList.add('hidden');
+        } else {
+          priceMain.textContent = `$${discountPrice}`;
+          if (hasDiscount) {
+            priceOrig.textContent = `$${w.price.toFixed(2)}`;
+            priceOrig.classList.remove('hidden');
+            saleBadge.textContent = `SALE -${w.discount}%`;
+            saleBadge.classList.remove('hidden');
+          } else {
+            priceOrig.classList.add('hidden');
+            saleBadge.classList.add('hidden');
+          }
+        }
+
+        document.getElementById('detail-resolution').textContent = w.resolution || '3840x2160 (4K UHD)';
+        document.getElementById('detail-aspect').textContent = w.aspectRatio || '16:9 Landscape';
+        document.getElementById('detail-filesize').textContent = w.fileSize || '6.5 MB';
+        document.getElementById('detail-downloads').textContent = Number(w.downloadsCount || 1200).toLocaleString();
+        document.getElementById('detail-description').textContent = w.description;
+
+        // Tags Cluster
+        const tagsContainer = document.getElementById('detail-tags');
+        if (tagsContainer) {
+          tagsContainer.innerHTML = (w.tags || []).map(tag => {
+            return `
+              <span class="px-2.5 py-1 text-[10px] font-mono font-medium rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 capitalize hover:text-white transition-colors cursor-pointer" onclick="event.stopPropagation(); closeDetailModal(); switchTab('explore'); document.getElementById('search-input').value='${tag}'; handleFilter()">
+                #${tag}
+              </span>
+            `;
+          }).join('');
+        }
+
+        // Set Simulation Frame images
+        document.getElementById('sim-bg-desktop').style.backgroundImage = `url('${w.url}')`;
+        document.getElementById('sim-bg-mobile').style.backgroundImage = `url('${w.url}')`;
+        document.getElementById('sim-bg-tablet').style.backgroundImage = `url('${w.url}')`;
+
+        // Reset Frame
+        setSimulationFrame('desktop');
+
+        // Draw active buttons inside footer
+        renderDetailModalFooter();
+      }
+
+      function closeDetailModal() {
+        const modal = document.getElementById('detail-modal');
+        const overlay = document.getElementById('backdrop-overlay');
+        
+        if (!modal || !overlay) return;
+
+        modal.classList.add('scale-95', 'opacity-0');
+        overlay.classList.add('opacity-0');
+        
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          overlay.classList.add('hidden');
+          currentDetailWallpaper = null;
+        }, 300);
+      }
+
+      function setSimulationFrame(frame) {
+        activeSimulationFrame = frame;
+        const frames = ['desktop', 'mobile', 'tablet'];
+        
+        frames.forEach(fr => {
+          const container = document.getElementById(`sim-frame-${fr}`);
+          const btn = document.getElementById(`sim-btn-${fr}`);
+          
+          if (fr === frame) {
+            container.classList.remove('hidden');
+            if (btn) {
+              btn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 bg-brand-red text-white";
+            }
+          } else {
+            container.classList.add('hidden');
+            if (btn) {
+              btn.className = "px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 text-zinc-400 hover:text-white";
+            }
+          }
+        });
+        lucide.createIcons();
+      }
+
+      function renderDetailModalFooter() {
+        const footer = document.getElementById('detail-modal-footer');
+        if (!footer || !currentDetailWallpaper) return;
+
+        const w = currentDetailWallpaper;
+        const userOwns = isOwned(w.id);
+
+        if (userOwns) {
+          footer.innerHTML = `
+            <button onclick="triggerDownload('${w.id}')" class="flex-1 py-4 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white text-sm transition-all flex items-center justify-center gap-2">
+              <i data-lucide="download" class="w-4 h-4"></i> Download Master Asset (4K UHD)
+            </button>
+          `;
+        } else if (w.price === 0) {
+          footer.innerHTML = `
+            <button onclick="claimFreeWallpaper('${w.id}'); renderDetailModalFooter();" class="flex-1 py-4 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white text-sm transition-all flex items-center justify-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i> Claim Wallpaper (FREE)
+            </button>
+          `;
+        } else {
+          const added = isInCart(w.id);
+          footer.innerHTML = `
+            <button onclick="toggleCartItem('${w.id}')" class="flex-grow py-4 rounded-xl font-bold ${
+              added 
+                ? 'bg-zinc-800 hover:bg-zinc-750 text-white' 
+                : 'bg-brand-red hover:bg-brand-red-dark text-white shadow-lg shadow-brand-red/15'
+            } text-sm transition-all flex items-center justify-center gap-2">
+              <i data-lucide="${added ? 'check' : 'shopping-bag'}" class="w-4 h-4"></i> ${added ? 'Added in Shopping Cart' : 'Add to Shopping Cart'}
+            </button>
+            <button onclick="toggleCartItem('${w.id}'); toggleCartDrawer(true); closeDetailModal();" class="py-4 px-6 rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:text-white hover:bg-zinc-800 font-bold text-sm transition-colors flex items-center justify-center gap-1.5">
+              Instant Unlock
+            </button>
+          `;
+        }
+        lucide.createIcons();
+      }
+
+      function closeAllOverlays() {
+        toggleCartDrawer(false);
+        closeDetailModal();
+      }
+
+
+      // 14. DYNAMIC ADMINISTRATOR TERMINAL (Stats metrics, Create & Delete)
+      function checkAdminAuthState() {
+        const authorized = safeStorage.getItem('admin_authenticated') === 'true';
+        const loginBlock = document.getElementById('admin-login-block');
+        const dashboardBlock = document.getElementById('admin-dashboard-block');
+
+        if (!loginBlock || !dashboardBlock) return;
+
+        if (authorized) {
+          loginBlock.classList.add('hidden');
+          dashboardBlock.classList.remove('hidden');
+          renderAdminDashboard();
+        } else {
+          dashboardBlock.classList.add('hidden');
+          loginBlock.classList.remove('hidden');
+        }
+      }
+
+      function handleAdminLogin(event) {
+        event.preventDefault();
+        const user = document.getElementById('admin-username').value.trim();
+        const pass = document.getElementById('admin-password').value.trim();
+        const errBox = document.getElementById('login-error-box');
+
+        if (user === 'SigmaTeam' && pass === 'SigmaTeam') {
+          safeStorage.setItem('admin_authenticated', 'true');
+          if (errBox) errBox.classList.add('hidden');
+          
+          showNotification('Successfully logged in as administrator.', 'success');
+          checkAdminAuthState();
+          
+          // Clear form
+          document.getElementById('admin-username').value = '';
+          document.getElementById('admin-password').value = '';
+        } else {
+          if (errBox) errBox.classList.remove('hidden');
+        }
+      }
+
+      function handleAdminLogout() {
+        safeStorage.removeItem('admin_authenticated');
+        showNotification('Logged out from admin panel.', 'info');
+        checkAdminAuthState();
+      }
+
+      function renderAdminDashboard() {
+        const table = document.getElementById('admin-catalog-table');
+        if (!table) return;
+
+        // Calculate metrics
+        const totalCount = wallpapers.length;
+        const freeCount = wallpapers.filter(w => w.price === 0).length;
+        
+        let avgPriceSum = 0;
+        let pricedCount = 0;
+        wallpapers.forEach(w => {
+          if (w.price > 0) {
+            avgPriceSum += w.price;
+            pricedCount++;
+          }
+        });
+        const avgPrice = pricedCount > 0 ? (avgPriceSum / pricedCount) : 0;
+
+        document.getElementById('stat-total-count').textContent = totalCount;
+        document.getElementById('stat-free-count').textContent = freeCount;
+        document.getElementById('stat-avg-price').textContent = `$${avgPrice.toFixed(2)}`;
+
+        // Map table list
+        table.innerHTML = wallpapers.map(w => {
+          return `
+            <tr>
+              <td class="py-4 pr-4 flex items-center space-x-3">
+                <img src="${w.coverImage}" alt="${w.title}" class="w-12 h-9 rounded-lg object-cover" referrerPolicy="no-referrer" />
+                <span class="text-xs font-bold text-white uppercase tracking-wider">${w.title}</span>
+              </td>
+              <td class="py-4 px-4">
+                <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">${w.category}</span>
+              </td>
+              <td class="py-4 px-4 font-mono text-xs text-white">
+                ${w.price === 0 ? '<span class="text-emerald-400 font-bold font-sans">FREE</span>' : '$' + w.price.toFixed(2)}
+              </td>
+              <td class="py-4 pl-4 text-right">
+                <button onclick="handleDeleteWallpaper('${w.id}')" class="p-2 rounded-xl hover:bg-red-500/15 border border-transparent hover:border-red-500/20 text-zinc-500 hover:text-red-500 transition-colors" title="Delete Asset">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+      function handleCreateWallpaper(event) {
+        event.preventDefault();
+        
+        const title = document.getElementById('add-title').value.trim();
+        const category = document.getElementById('add-category').value;
+        const price = parseFloat(document.getElementById('add-price').value);
+        const cover = document.getElementById('add-cover').value.trim();
+        const res = document.getElementById('add-resolution').value.trim() || '3840x2160 (4K UHD)';
+        const aspect = document.getElementById('add-aspect').value.trim() || '16:9 Landscape';
+        const desc = document.getElementById('add-description').value.trim() || 'Asset added by system administrator.';
+
+        if (!title || !cover) {
+          showNotification('Title and Cover Image URL are required fields.', 'error');
+          return;
+        }
+
+        const id = title.toLowerCase().replace(/\\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+        if (wallpapers.some(w => w.id === id)) {
+          showNotification('A wallpaper with this name or ID already exists.', 'error');
+          return;
+        }
+
+        // Push new item
+        wallpapers.push({
+          id: id,
+          title: title,
+          price: price,
+          coverImage: cover,
+          url: cover, // Use cover image as high-res URL for simplicity
+          category: category,
+          tags: [category.toLowerCase(), 'custom', 'sci-fi', 'space'],
+          creator: 'Systems Admin',
+          downloadsCount: 0,
+          rating: 5.0,
+          resolution: res,
+          aspectRatio: aspect,
+          fileSize: '6.2 MB',
+          description: desc,
+          shortDescription: desc.substring(0, 100) + '...'
+        });
+
+        // Sync and re-render
+        safeStorage.setItem('wallpaper_catalog', JSON.stringify(wallpapers));
+        
+        showNotification('Appended new premium asset successfully to active database catalog.', 'success');
+        
+        // Reset Form
+        document.getElementById('add-title').value = '';
+        document.getElementById('add-price').value = '';
+        document.getElementById('add-cover').value = '';
+        document.getElementById('add-resolution').value = '';
+        document.getElementById('add-aspect').value = '';
+        document.getElementById('add-description').value = '';
+
+        renderAdminDashboard();
+      }
+
+      function handleDeleteWallpaper(id) {
+        if (confirm('Are you absolutely sure you want to delete this asset from the active catalog? This action is irreversible.')) {
+          wallpapers = wallpapers.filter(w => w.id !== id);
+          safeStorage.setItem('wallpaper_catalog', JSON.stringify(wallpapers));
+          
+          showNotification('Asset successfully removed from database.', 'info');
+          renderAdminDashboard();
+
+          // If item is in cart, remove it
+          if (isInCart(id)) {
+            removeFromCart(id);
+          }
+        }
+      }
+
+
+      // 15. INITIALIZATION HOOKS ON LOAD
+      window.addEventListener('DOMContentLoaded', () => {
+        // Render theme & tabs
+        updateThemeState();
+        switchTab('home');
+        updateCartBadgeCount();
+      });
+
+    </script>
+  </body>
+</html>
