@@ -1,0 +1,150 @@
+import { ShoppingBag, Home as HomeIcon, Image, Sparkles, FolderHeart, Sun, Moon, Lock } from 'lucide-react';
+import { TabType } from '../types';
+// @ts-ignore
+import alienLogo from '../assets/images/alien_logo_1783043579615.jpg';
+
+interface HeaderProps {
+  activeTab: TabType;
+  setActiveTab: (tab: TabType) => void;
+  cartCount: number;
+  onCartClick: () => void;
+  ownedCount: number;
+  onLibraryClick: () => void;
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
+}
+
+export default function Header({
+  activeTab,
+  setActiveTab,
+  cartCount,
+  onCartClick,
+  ownedCount,
+  onLibraryClick,
+  isDarkMode,
+  onToggleTheme,
+}: HeaderProps) {
+  return (
+    <header className={`sticky top-0 z-40 w-full transition-colors duration-300 backdrop-blur-md ${
+      isDarkMode 
+        ? 'bg-zinc-950/90 border-b border-zinc-900/80 shadow-2xl shadow-black/40' 
+        : 'bg-white/95 border-b border-zinc-200/85 shadow-sm'
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo / Title */}
+          <div 
+            className="flex items-center space-x-3 cursor-pointer group"
+            onClick={() => setActiveTab('home')}
+            id="header-logo"
+          >
+            <img 
+              src={alienLogo} 
+              alt="Alien Last Hope Shooter Logo" 
+              className="h-12 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+
+          {/* Navigation Links - Home & Explore */}
+          <nav className="flex space-x-2 h-full items-center" id="main-navigation">
+            <button
+              id="nav-home"
+              onClick={() => setActiveTab('home')}
+              className={`relative flex items-center space-x-2 px-4 sm:px-5 py-3 rounded-md font-bold uppercase tracking-wider text-xs transition-all duration-300 ${
+                activeTab === 'home'
+                  ? 'text-[#ff3333] bg-[#ff3333]/10 border border-[#ff3333]/20'
+                  : isDarkMode
+                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+              }`}
+            >
+              <HomeIcon className="w-4 h-4" />
+              <span>Gallery Home</span>
+              {activeTab === 'home' && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#ff3333]" />
+              )}
+            </button>
+            <button
+              id="nav-admin"
+              onClick={() => setActiveTab('admin')}
+              className={`relative flex items-center space-x-2 px-4 sm:px-5 py-3 rounded-md font-bold uppercase tracking-wider text-xs transition-all duration-300 ${
+                activeTab === 'admin'
+                  ? 'text-[#ff3333] bg-[#ff3333]/10 border border-[#ff3333]/20'
+                  : isDarkMode
+                    ? 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+              }`}
+            >
+              <Lock className="w-4 h-4" />
+              <span>Admin Panel</span>
+              {activeTab === 'admin' && (
+                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#ff3333]" />
+              )}
+            </button>
+          </nav>
+
+          {/* Action Area: Theme Toggle, My Collection and Shopping Cart */}
+          <div className="flex items-center space-x-3">
+            {/* Dark/White Theme Toggle */}
+            <button
+              id="theme-toggle-btn"
+              onClick={onToggleTheme}
+              className={`p-3 rounded-full border transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95 flex items-center justify-center ${
+                isDarkMode
+                  ? 'bg-zinc-900/60 border-zinc-800 text-amber-400 hover:text-amber-300 hover:border-zinc-700 hover:bg-zinc-805'
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:text-zinc-900 hover:border-zinc-300 hover:bg-zinc-100'
+              }`}
+              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDarkMode ? (
+                <Sun className="w-4.5 h-4.5 animate-pulse" />
+              ) : (
+                <Moon className="w-4.5 h-4.5" />
+              )}
+            </button>
+
+            {/* My Collection Button */}
+            <button
+              id="library-btn"
+              onClick={onLibraryClick}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md border text-xs font-bold uppercase tracking-wide transition-all duration-200 cursor-pointer ${
+                isDarkMode
+                  ? 'border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-zinc-300 hover:text-white'
+                  : 'border-zinc-200 hover:border-zinc-300 bg-zinc-50 text-zinc-700 hover:text-zinc-900'
+              }`}
+              title="My Wallpapers"
+            >
+              <FolderHeart className="w-4 h-4 text-[#ff3333]" />
+              <span className="hidden sm:inline">My Collection</span>
+              {ownedCount > 0 && (
+                <span className="bg-[#ff3333]/10 text-[#ff3333] border border-[#ff3333]/20 px-2 py-0.5 rounded font-mono text-xxs font-black">
+                  {ownedCount}
+                </span>
+              )}
+            </button>
+
+            {/* Shopping Cart Button */}
+            <button
+              id="cart-btn"
+              onClick={onCartClick}
+              className={`relative p-3 rounded-full border transition-all duration-200 cursor-pointer ${
+                isDarkMode
+                  ? 'bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white'
+                  : 'bg-zinc-50 border-zinc-200 hover:border-zinc-300 text-zinc-700 hover:text-zinc-900'
+              }`}
+              aria-label="Shopping Cart"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#ff3333] text-xs font-black text-white shadow-[0_0_10px_rgba(255,51,51,0.5)] animate-bounce">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
