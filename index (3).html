@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Field - Wallpapers</title>
+    <style>
+        /* --- Design System (Red & Pure White Theme) --- */
+        :root {
+            --bg-primary: #ffffff;       /* Pure White Background */
+            --accent-red: #d9383a;       /* Main Red Color */
+            --accent-red-hover: #b8282a; 
+            --text-main: #121212;        /* Dark text for best readability */
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            --radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- Header & Navigation (No Loops - Pure White) --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--accent-red);
+            background-color: #ffffff; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .logo span {
+            color: var(--accent-red); /* 'Field' text in red */
+        }
+
+        nav button {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            margin-left: 1rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        nav button:hover, nav button.active {
+            color: #ffffff;
+            background-color: var(--accent-red);
+            border-color: var(--accent-red);
+            box-shadow: 0 4px 10px rgba(217, 56, 58, 0.2);
+        }
+
+        /* --- Main Content Layout --- */
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex-grow: 1;
+        }
+
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        h2 { font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--text-main); }
+
+        /* --- Home Page Grid --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--accent-red); 
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img { width: 100%; height: 220px; object-fit: cover; background: #f9f9f9; }
+
+        .card-body { padding: 1.25rem; flex-grow: 1; display: flex; flex-direction: column; }
+
+        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        
+        .btn {
+            width: 100%;
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border: none;
+            padding: 0.8rem;
+            font-weight: 600;
+            border-radius: var(--radius);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+        .btn:hover { background-color: var(--accent-red-hover); }
+
+        .download-btn {
+            margin-top: auto; /* Buttons will align perfectly at the bottom */
+            background-color: transparent;
+            color: var(--accent-red);
+            border: 2px solid var(--accent-red);
+        }
+        .download-btn:hover { background-color: var(--accent-red); color: #ffffff; }
+
+        /* --- Admin Forms --- */
+        .form-container {
+            max-width: 450px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background: #ffffff;
+            color: var(--text-main);
+            outline: none;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--accent-red);
+        }
+
+        .dashboard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        @media (max-width: 850px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+        }
+
+        .delete-btn {
+            background-color: #333;
+            color: #ffffff;
+            margin-top: 0.5rem;
+        }
+        .delete-btn:hover { background-color: #000; }
+        
+        .logout-btn { background-color: transparent; color: var(--accent-red); border: 1px solid var(--accent-red); margin-bottom: 2rem; width: auto;}
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation (Pure White) -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">Silent <span>Field</span></div>
+            <nav>
+                <button id="nav-home" class="active" onclick="switchView('home')">Home</button>
+                <button id="nav-admin" onclick="switchView('admin')">Admin</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="view-home" class="view-section active">
+            <h2>Latest Wallpapers</h2>
+            <div id="wallpaper-grid" class="grid"></div>
+        </section>
+
+        <section id="view-admin-login" class="view-section">
+            <div class="form-container">
+                <h2>Admin Login</h2>
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="view-admin-dashboard" class="view-section">
+            <button class="btn logout-btn" onclick="handleLogout()">Logout</button>
+            <div class="dashboard-layout">
+                <div class="form-container" style="margin:0; max-width: 100%;">
+                    <h3>Upload New</h3>
+                    <form id="upload-form" onsubmit="handleUpload(event)">
+                        <input type="file" id="wp-file" accept="image/*" required>
+                        <input type="text" id="wp-title" placeholder="Title" required>
+                        <input type="text" id="wp-tags" placeholder="Tags (e.g. nature, red)">
+                        <textarea id="wp-desc" placeholder="Description"></textarea>
+                        <button type="submit" class="btn">Publish</button>
+                    </form>
+                </div>
+                <div id="admin-gallery-grid" class="grid" style="grid-template-columns: 1fr 1fr; align-content: start;"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let isLoggedIn = false;
+        let wallpapers = JSON.parse(localStorage.getItem('sf_wallpapers')) || [];
+
+        window.addEventListener('DOMContentLoaded', renderWallpapers);
+
+        function switchView(target) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+
+            if(target === 'home') {
+                document.getElementById('view-home').classList.add('active');
+                document.getElementById('nav-home').classList.add('active');
+                renderWallpapers();
+            } else {
+                document.getElementById('nav-admin').classList.add('active');
+                if(isLoggedIn) {
+                    document.getElementById('view-admin-dashboard').classList.add('active');
+                    renderAdminGallery();
+                } else {
+                    document.getElementById('view-admin-login').classList.add('active');
+                }
+            }
+        }
+
+        // Auth
+        function handleLogin(e) {
+            e.preventDefault();
+            if(document.getElementById('username').value === "SigmaTeam" && document.getElementById('password').value === "SigmaTeam") {
+                isLoggedIn = true;
+                switchView('admin');
+            } else { alert("Wrong credentials!"); }
+        }
+
+        function handleLogout() { isLoggedIn = false; switchView('home'); }
+
+        // Core Functions
+        function handleUpload(e) {
+            e.preventDefault();
+            const file = document.getElementById('wp-file').files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                wallpapers.unshift({
+                    id: Date.now(),
+                    title: document.getElementById('wp-title').value,
+                    image: event.target.result,
+                    tags: document.getElementById('wp-tags').value.split(',')
+                });
+                localStorage.setItem('sf_wallpapers', JSON.stringify(wallpapers));
+                alert('Published successfully!');
+                document.getElementById('upload-form').reset();
+                renderAdminGallery();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function deleteWallpaper(id) {
+            if(confirm("Are you sure you want to delete this image?")) {
+                wallpapers = wallpapers.filter(wp => wp.id !== id);
+                localStorage.setItem('sf_wallpapers', JSON.stringify(wallpapers));
+                renderAdminGallery();
+            }
+        }
+
+        function renderWallpapers() {
+            const grid = document.getElementById('wallpaper-grid');
+            if(wallpapers.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 3rem; color: var(--text-muted);">No wallpapers found. Please log in to the admin panel to upload images.</div>';
+                return;
+            }
+            grid.innerHTML = wallpapers.map(wp => `
+                <div class="card">
+                    <img src="${wp.image}" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">${wp.title}</div>
+                        <a href="${wp.image}" download="${wp.title}.png" class="btn download-btn">Download</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminGallery() {
+            const grid = document.getElementById('admin-gallery-grid');
+            if(wallpapers.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 2rem; color: var(--text-muted);">No images available to manage.</div>';
+                return;
+            }
+            grid.innerHTML = wallpapers.map(wp => `
+                <div class="card">
+                    <img src="${wp.image}" style="height: 100px; object-fit: cover;">
+                    <div class="card-body" style="padding: 0.8rem;">
+                        <div style="font-size:0.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${wp.title}</div>
+                        <button class="btn delete-btn" onclick="deleteWallpaper(${wp.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
