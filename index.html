@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sigma Team Games Library</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background-color 0.3s; }
         body { background-color: #121212; color: #ffffff; padding-bottom: 50px; }
 
-        /* --- Header / Banner --- */
+        /* --- Header / Compact Banner --- */
         .top-bar { 
-            /* Banner image set to center */
             background-image: url('https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157');
             background-repeat: no-repeat;
-            background-position: center center; /* Image ka center wala hissa dikhega */
-            background-size: cover; /* Banner area ko cover karega */
+            background-position: center center; /* Image center se shuru hogi */
+            background-size: cover;
             background-color: #000;
             
-            /* Height kam ki taaki Red line upar aaye */
-            height: 120px; 
+            /* Banner ki height aur chhota kar di */
+            height: 80px; 
             
             display: flex;
             justify-content: center;
@@ -26,37 +25,39 @@
             position: sticky; 
             top: 0; 
             z-index: 1000; 
-            /* Red line */
             border-bottom: 3px solid #ff4500; 
         }
 
         .top-bar h2 {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 8px 16px;
-            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 15px;
+            border-radius: 4px;
             color: #ff4500;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
         }
 
-        /* --- Theme Toggle Button --- */
+        /* --- Theme Toggle --- */
         .theme-toggle {
             position: fixed; top: 10px; right: 10px; z-index: 2000;
-            padding: 8px 12px; background-color: #ff4500; color: white;
-            border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
+            padding: 5px 10px; background-color: #ff4500; color: white;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 12px;
         }
 
-        /* --- Main Content --- */
+        /* --- Grid & Content Styles --- */
         .container { max-width: 800px; margin: 20px auto; padding: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .game-card { background: #1e1e1e; padding: 15px; border-radius: 10px; cursor: pointer; border: 1px solid #333; }
-        .game-card:hover { border-color: #ff4500; }
         .game-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 5px; }
-
         .detail-view { display: none; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #444; }
-        .promo-box { margin-top: 20px; padding: 20px; background: #2a2a2a; border-radius: 5px; text-align: center; }
-        .download-link-btn { display: none; background: #28a745; color: white; padding: 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 15px; display: inline-block; }
-        .back-btn { background: none; border: none; color: #ff4500; cursor: pointer; margin-bottom: 10px; }
+        .download-link-btn { display: none; background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; }
+        .back-btn { background: none; border: none; color: #ff4500; cursor: pointer; margin-bottom: 15px; }
+
+        /* Light Mode */
+        body.light-mode { background-color: #f0f0f0; color: #121212; }
+        body.light-mode .game-card { background: #fff; border-color: #ccc; }
+        body.light-mode .detail-view { background: #fff; border-color: #ccc; }
     </style>
 </head>
 <body>
@@ -86,23 +87,21 @@
     <script>
         const VALID_CODES = ["ASWFAN", "ASWORD", "ASFANG"];
         const games = {
-            'game1': { title: "Alien Shooter 2 - The Legend", img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1007400/capsule_616x353.jpg?t=1700734144", about: "Fast-paced top-down action shooter.", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9tZWdhdXAubmV0LzJhNTZlZTU2ZjY2YmU0NmQ1ZDIxYjZhMzdkOWJhMjRmL0FsaWVuLlNob290ZXIuMi5UaGUuTGVnZW5kLnYxLjMuMi5yYXI=", genre: "ACTION & RPG" },
-            'game2': { title: "Alien Shooter 2 - New Era", img: "https://steamah.com/wp-content/uploads/2022/06/Alien-Shooter-2-New-Era.jpg", about: "Thousands of monsters coming from all sides.", link: "https://uploadhaven.com/download/7af43982a4d288f1979164a4930c806c", genre: "ACTION" },
-            'game3': { title: "Alien Shooter Vengeance", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBPt1Dz4U-LOiGVMTnweg4pmp3OpETUXaJRDL0t4_qhw&s=10", about: "Mercenary from the M.A.G.M.A Corporation.", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L3RLbmRSZ1A5", genre: "ACTION" },
-            'game4': { title: "Alien Shooter 2 Reloaded", img: "https://tse3.mm.bing.net/th/id/OIP.z2q8Co1vLTm_JBKwfqOLLAHaDb?cb=thfvnextfalcon4&rs=1&pid=ImgDetMain&o=7&rm=3", about: "Intense top-down action shooter.", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9tZWdhdXAubmV0L2QxYTUxMmVmNDgzNjk2NTdhY2FlYTdhYjE3Yjk4MWJkL0FsaWVuU2hvb3QyUmVsb2FkZWRHT0cucmFy", genre: "ACTION & RPG" },
-            'game5': { title: "Alien Shooter – Last Hope", img: "https://cdn.akamai.steamstatic.com/steam/apps/951530/capsule_616x353.jpg?t=1655832408", about: "Find a new weapon and upgrade it.", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L2RpOTk2bnh2", genre: "ACTION & ADVENTURE" },
-            'game6': { title: "Zombie Shooter 2", img: "https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/10417.jpeg.webp", about: "Unique mix of action and RPG.", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L2pBam8yN0Ez", genre: "ACTION, RPG, HORROR" }
+            'game1': { title: "Alien Shooter 2 - The Legend", img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1007400/capsule_616x353.jpg?t=1700734144", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9tZWdhdXAubmV0LzJhNTZlZTU2ZjY2YmU0NmQ1ZDIxYjZhMzdkOWJhMjRmL0FsaWVuLlNob290ZXIuMi5UaGUuTGVnZW5kLnYxLjMuMi5yYXI=" },
+            'game2': { title: "Alien Shooter 2 - New Era", img: "https://steamah.com/wp-content/uploads/2022/06/Alien-Shooter-2-New-Era.jpg", link: "https://uploadhaven.com/download/7af43982a4d288f1979164a4930c806c" },
+            'game3': { title: "Alien Shooter Vengeance", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBPt1Dz4U-LOiGVMTnweg4pmp3OpETUXaJRDL0t4_qhw&s=10", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L3RLbmRSZ1A5" },
+            'game4': { title: "Alien Shooter 2 Reloaded", img: "https://tse3.mm.bing.net/th/id/OIP.z2q8Co1vLTm_JBKwfqOLLAHaDb?cb=thfvnextfalcon4&rs=1&pid=ImgDetMain&o=7&rm=3", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9tZWdhdXAubmV0L2QxYTUxMmVmNDgzNjk2NTdhY2FlYTdhYjE3Yjk4MWJkL0FsaWVuU2hvb3QyUmVsb2FkZWRHT0cucmFy" },
+            'game5': { title: "Alien Shooter – Last Hope", img: "https://cdn.akamai.steamstatic.com/steam/apps/951530/capsule_616x353.jpg?t=1655832408", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L2RpOTk2bnh2" },
+            'game6': { title: "Zombie Shooter 2", img: "https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/10417.jpeg.webp", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L2pBam8yN0Ez" }
         };
 
         function showGame(id) {
             const game = games[id];
             document.getElementById('game-content').innerHTML = `
                 <img src="${game.img}" style="width:100%; border-radius: 5px;">
-                <h1 style="margin-top:20px;">${game.title}</h1>
-                <p class="promo-box">
-                    <input type="text" id="promo-input" placeholder="ENTER CODE" onkeyup="checkCode('${id}')">
-                    <br><a id="download-link-${id}" href="${game.link}" target="_blank" class="download-link-btn">UNLOCK & DOWNLOAD</a>
-                </p>
+                <h1 style="margin-top:15px;">${game.title}</h1>
+                <input type="text" id="promo-input" placeholder="ENTER CODE" onkeyup="checkCode('${id}')" style="padding:8px; width:100%; margin:10px 0;">
+                <br><a id="download-link-${id}" href="${game.link}" target="_blank" class="download-link-btn" style="display:none;">UNLOCK & DOWNLOAD</a>
             `;
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
