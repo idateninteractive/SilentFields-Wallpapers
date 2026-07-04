@@ -5,32 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sigma Team Games Library</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        /* --- Core Styles (Default Dark Mode) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        
         body { background-color: #121212; color: #ffffff; padding-bottom: 50px; }
 
-        .top-bar { background-color: #000; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #ff4500; }
+        /* --- Header / Banner --- */
+        .top-bar { 
+            background-image: url('https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157');
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-size: 100% auto;
+            background-color: #000;
+            height: 150px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            border-bottom: 3px solid #ff4500; 
+        }
+
+        .top-bar h2 {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #ff4500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- Theme Toggle Button --- */
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 2000;
+            padding: 8px 12px;
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* --- Main Container --- */
         .container { max-width: 800px; margin: 20px auto; padding: 20px; }
         
+        /* --- Grid View --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        
         .game-card { background: #1e1e1e; padding: 15px; border-radius: 10px; cursor: pointer; border: 1px solid #333; transition: 0.3s; }
         .game-card:hover { transform: scale(1.02); border-color: #ff4500; }
         .game-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 5px; }
+        .game-card h3 { margin-top: 10px; font-size: 18px; }
 
+        /* --- Detail View --- */
         .detail-view { display: none; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #444; }
         .about-text { margin: 20px 0; line-height: 1.6; color: #ccc; font-size: 16px; }
-        .genre-tag { background: #ff4500; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .genre-tag { background: #ff4500; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
         
-        .promo-box { margin-top: 20px; padding: 20px; background: #2a2a2a; border-radius: 5px; text-align: center; }
-        .promo-box input { padding: 10px; width: 200px; border-radius: 4px; border: none; text-align: center; font-size: 16px; text-transform: uppercase; }
-        .download-link-btn { display: none; background: #28a745; color: white; padding: 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; }
-        .back-btn { background: none; border: none; color: #ff4500; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        /* --- Promo & Download Section --- */
+        .promo-box { margin-top: 20px; padding: 20px; background: #2a2a2a; border-radius: 5px; text-align: center; border: 1px solid #444; }
+        .promo-box p { margin-bottom: 10px; }
+        .promo-box input { padding: 10px; width: 200px; border-radius: 4px; border: 1px solid #555; background-color: #1a1a1a; color: white; text-align: center; font-size: 16px; text-transform: uppercase; }
+        .promo-box input:focus { outline: none; border-color: #ff4500; }
+        
+        .download-link-btn { display: none; background: #28a745; color: white; padding: 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 15px; display: inline-block; transition: background-color 0.2s; }
+        .download-link-btn:hover { background-color: #218838; }
+        
+        .back-btn { background: none; border: none; color: #ff4500; cursor: pointer; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
+        .back-btn:hover { text-decoration: underline; }
+
+        /* =========================================
+           --- Light Mode Overrides ---
+           ========================================= */
+        body.light-mode { background-color: #f0f0f0; color: #121212; }
+        
+        /* Keep banner dark */
+        body.light-mode .top-bar { background-color: #000; border-bottom-color: #e63e00; }
+        body.light-mode .top-bar h2 { color: #ff4500; background: rgba(0,0,0,0.7); }
+
+        /* Grid cards in light mode */
+        body.light-mode .game-card { background: #ffffff; border-color: #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body.light-mode .game-card:hover { border-color: #ff4500; }
+        body.light-mode .game-card h3 { color: #121212; }
+
+        /* Detail view in light mode */
+        body.light-mode .detail-view { background: #ffffff; border-color: #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        body.light-mode .detail-view h1 { color: #121212; }
+        body.light-mode .about-text { color: #444; }
+        
+        /* Promo box in light mode */
+        body.light-mode .promo-box { background: #f9f9f9; border-color: #ccc; color: #333; }
+        body.light-mode .promo-box input { background-color: #fff; color: #121212; border-color: #ccc; }
+
     </style>
 </head>
 <body>
 
-    <div class="top-bar"><h2>SIGMA TEAM GAMES</h2></div>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">Light Mode</button>
 
+    <!-- Header Banner -->
+    <div class="top-bar">
+        <h2>SIGMA TEAM GAMES</h2>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
+        
+        <!-- Grid View (Home) -->
         <div id="home-view" class="grid">
             <div class="game-card" onclick="showGame('game1')"><img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1007400/capsule_616x353.jpg?t=1700734144"><h3>Alien Shooter 2 - The Legend</h3></div>
             <div class="game-card" onclick="showGame('game2')"><img src="https://steamah.com/wp-content/uploads/2022/06/Alien-Shooter-2-New-Era.jpg"><h3>Alien Shooter 2 - New Era</h3></div>
@@ -40,14 +128,17 @@
             <div class="game-card" onclick="showGame('game6')"><img src="https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/10417.jpeg.webp"><h3>Zombie Shooter 2</h3></div>
         </div>
 
+        <!-- Detail View (Hidden by default) -->
         <div id="detail-view" class="detail-view">
             <button class="back-btn" onclick="goBack()">← Back to Library</button>
-            <div id="game-content"></div>
+            <div id="game-content">
+                <!-- Content injected by JavaScript -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Aapke valid promo codes
+        // --- Configuration ---
         const VALID_CODES = ["ASWFAN", "ASWORD", "ASFANG"];
 
         const games = {
@@ -59,39 +150,63 @@
             'game6': { title: "Zombie Shooter 2", img: "https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/10417.jpeg.webp", about: "Unique mix of action and RPG.", link: "https://www.4fnet.org/goto/aHR0cHM6Ly9waXhlbGRyYWluLmNvbS91L2pBam8yN0Ez", genre: "ACTION, RPG, HORROR" }
         };
 
+        // --- Navigation Functions ---
         function showGame(id) {
             const game = games[id];
+            // Render the detail page content
             document.getElementById('game-content').innerHTML = `
-                <img src="${game.img}" style="width:100%; border-radius: 5px;">
-                <h1 style="margin-top:20px;">${game.title}</h1>
+                <img src="${game.img}" style="width:100%; border-radius: 5px; max-height: 300px; object-fit: cover;">
+                <h1 style="margin-top:20px; font-size: 28px;">${game.title}</h1>
                 <p style="margin: 10px 0;"><span class="genre-tag">${game.genre}</span></p>
                 <p class="about-text">${game.about}</p>
                 
                 <div class="promo-box">
-                    <p>Enter Promo Code to Download:</p>
+                    <p><strong>Enter Promo Code to Unlock Download:</strong></p>
                     <input type="text" id="promo-input" placeholder="ENTER CODE" onkeyup="checkCode('${id}')">
                     <br>
-                    <a id="download-link-${id}" href="${game.link}" target="_blank" class="download-link-btn">UNLOCK & DOWNLOAD</a>
+                    <!-- Hidden download button -->
+                    <a id="download-link-${id}" href="${game.link}" target="_blank" class="download-link-btn">🔓 DOWNLOAD NOW</a>
                 </div>
             `;
+            // Switch views
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
-        }
-
-        function checkCode(id) {
-            const input = document.getElementById('promo-input').value.toUpperCase();
-            const linkBtn = document.getElementById('download-link-' + id);
-            
-            if(VALID_CODES.includes(input)) {
-                linkBtn.style.display = 'block';
-            } else {
-                linkBtn.style.display = 'none';
-            }
+            window.scrollTo(0, 0); // Scroll to top
         }
 
         function goBack() {
+            // Switch views back
             document.getElementById('home-view').style.display = 'grid';
             document.getElementById('detail-view').style.display = 'none';
+        }
+
+        // --- Logic Functions ---
+        function checkCode(gameId) {
+            // Get input value and convert to uppercase
+            const input = document.getElementById('promo-input').value.toUpperCase();
+            const linkBtn = document.getElementById('download-link-' + gameId);
+            
+            // Check if input matches any valid code
+            if(VALID_CODES.includes(input)) {
+                linkBtn.style.display = 'inline-block'; // Show button
+            } else {
+                linkBtn.style.display = 'none'; // Hide button
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            
+            // Toggle the class on body
+            body.classList.toggle('light-mode');
+            
+            // Update button text
+            if(body.classList.contains('light-mode')) {
+                btn.innerText = "Dark Mode";
+            } else {
+                btn.innerText = "Light Mode";
+            }
         }
     </script>
 </body>
