@@ -5,109 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sigma Team Wallpapers</title>
     <style>
-        /* Base Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #121212; color: #ffffff; }
 
-        body {
-            background-color: #121212; /* Dark background website ke liye */
-            color: #ffffff;
-        }
-
-        /* Top Bar Section (Pure Black with Background Image Overlay) */
         .top-bar {
-            /* Yahan background image lagayi hai aur linear-gradient se thoda black tint diya hai taaki logo saaf dikhe */
             background-image: linear-gradient(rgba(0, 0, 0, 0.623), rgba(0, 0, 0, 0.6)), url('https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            
-            padding: 15px 0; /* Height upar jitni hi rahegi, aakar nahi badlega */
-            display: flex;
-            justify-content: center;   /* Logo ko horizontal center karega */
-            align-items: center;       /* Logo ko vertical center karega */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background-size: cover; background-position: center;
+            padding: 15px 0; display: flex; justify-content: center; align-items: center;
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-
-        /* Logo Configuration */
-        .top-logo {
-            height: 60px;              /* Logo ki height */
-            object-fit: contain;       
-            filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.8)); /* Logo ko background se alag dikhane ke liye shadow */
-        }
-
-        /* Main Content Container */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 22px;
-            margin-bottom: 20px;
-            border-left: 4px solid #ffffff;
-            padding-left: 10px;
-        }
-
-        /* Wallpaper Grid Layout */
-        .wallpaper-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        /* Wallpaper Card Style */
-        .wallpaper-card {
-            background-color: #1e1e1e;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .wallpaper-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .wallpaper-img {
-            width: 100%;
-            height: 200px;
-            background-color: #333; 
-            object-fit: cover;
-            display: block;
-        }
-
-        .wallpaper-info {
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .download-btn {
-            background-color: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .download-btn:hover {
-            background-color: #cccccc;
-        }
+        .top-logo { height: 60px; object-fit: contain; filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.8)); }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .wallpaper-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .wallpaper-card { background-color: #1e1e1e; border-radius: 8px; overflow: hidden; transition: 0.3s; }
+        .wallpaper-card:hover { transform: translateY(-5px); }
+        .wallpaper-img { width: 100%; height: 200px; object-fit: cover; display: block; }
+        .wallpaper-info { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .download-btn { background-color: #ffffff; color: #000000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .download-btn:hover { background-color: #cccccc; }
     </style>
 </head>
 <body>
@@ -118,41 +33,62 @@
 
     <div class="container">
         <h2 class="section-title">Latest Wallpapers</h2>
-        
         <div class="wallpaper-grid">
+            
             <div class="wallpaper-card">
-                <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157" alt="Alien Shooter New Environment" class="wallpaper-img">
+                <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157" class="wallpaper-img">
                 <div class="wallpaper-info">
                     <span>Alien Shooter Vibe</span>
-                    <a href="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157" target="_blank" class="download-btn">Download</a>
+                    <button class="download-btn" data-url="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/33100/page_bg_raw.jpg?t=1773835157">Download</button>
                 </div>
             </div>
 
             <div class="wallpaper-card">
-                <img src="https://external-preview.redd.it/the-legendary-game-from-your-and-my-childhood-is-finally-v0-k8uz-yEq35tb2woVXFSzV4fH7pPk9suk1sWCxhnoACk.jpg?auto=webp&s=2a5b934b2db1dbaff260c53f090eb6561236d65f" alt="Alien Shooter Childhood Memories" class="wallpaper-img">
+                <img src="https://external-preview.redd.it/the-legendary-game-from-your-and-my-childhood-is-finally-v0-k8uz-yEq35tb2woVXFSzV4fH7pPk9suk1sWCxhnoACk.jpg?auto=webp&s=2a5b934b2db1dbaff260c53f090eb6561236d65f" class="wallpaper-img">
                 <div class="wallpaper-info">
                     <span>Alien Shooter Campaign</span>
-                    <a href="https://external-preview.redd.it/the-legendary-game-from-your-and-my-childhood-is-finally-v0-k8uz-yEq35tb2woVXFSzV4fH7pPk9suk1sWCxhnoACk.jpg?auto=webp&s=2a5b934b2db1dbaff260c53f090eb6561236d65f" target="_blank" class="download-btn">Download</a>
+                    <button class="download-btn" data-url="https://external-preview.redd.it/the-legendary-game-from-your-and-my-childhood-is-finally-v0-k8uz-yEq35tb2woVXFSzV4fH7pPk9suk1sWCxhnoACk.jpg?auto=webp&s=2a5b934b2db1dbaff260c53f090eb6561236d65f">Download</button>
                 </div>
             </div>
 
             <div class="wallpaper-card">
-                <img src="https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/24316.jpeg.webp" alt="Alien Shooter Key Art" class="wallpaper-img">
+                <img src="https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/24316.jpeg.webp" class="wallpaper-img">
                 <div class="wallpaper-info">
                     <span>Alien Shooter Action</span>
-                    <a href="https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/24316.jpeg.webp" target="_blank" class="download-btn">Download</a>
+                    <button class="download-btn" data-url="https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/24316.jpeg.webp">Download</button>
                 </div>
             </div>
 
             <div class="wallpaper-card">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTri7-hG-l0vVDZ4aYl_eg63BbXxjux7MNWumta8uwRLDrjMm2I5hhfN3ml&s=10" alt="Alien Shooter Iconic Grid" class="wallpaper-img">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTri7-hG-l0vVDZ4aYl_eg63BbXxjux7MNWumta8uwRLDrjMm2I5hhfN3ml&s=10" class="wallpaper-img">
                 <div class="wallpaper-info">
                     <span>Alien Shooter Classic</span>
-                    <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTri7-hG-l0vVDZ4aYl_eg63BbXxjux7MNWumta8uwRLDrjMm2I5hhfN3ml&s=10" target="_blank" class="download-btn">Download</a>
+                    <button class="download-btn" data-url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTri7-hG-l0vVDZ4aYl_eg63BbXxjux7MNWumta8uwRLDrjMm2I5hhfN3ml&s=10">Download</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <script>
+        document.querySelectorAll('.download-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const imageUrl = button.getAttribute('data-url');
+                try {
+                    const response = await fetch(imageUrl);
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'wallpaper.jpg';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } catch (error) {
+                    window.open(imageUrl, '_blank'); // Agar direct download fail ho, toh tab mein open kare
+                }
+            });
+        });
+    </script>
 </body>
 </html>
